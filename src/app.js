@@ -13,6 +13,7 @@ fetch('./data/example.json')
   .then(data => myVis(data))
   .catch(e => {
     console.log(e);
+    console.log('This SUCKS!');
   });
 
 function myVis(data) {
