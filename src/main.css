@@ -11,3 +11,8 @@ body {
   padding: 0;
   width: 100%;
 }
+
+
+#app {
+  font-family: 'Gill Sans MT'
+}
