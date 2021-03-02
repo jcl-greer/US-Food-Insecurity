@@ -55,7 +55,7 @@ function myVis(data) {
     .domain(yDomain)
     .range([0, plotHeight]);
 
-  const svg = select('#app .charters')
+  const svg = select('.charters')
     .append('svg')
     .attr('height', height)
     .attr('width', width)
@@ -63,7 +63,8 @@ function myVis(data) {
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
   svg
-    .selectAll('charters')
+    .selectAll('circle')
+    // .append('g')
     .data(data)
     .join('circle')
     .filter(d => {
@@ -73,22 +74,19 @@ function myVis(data) {
     .attr('cx', d => xScale(d[xDim]))
     .attr('cy', d => yScale(d[yDim]))
     .attr('r', 4)
-    // .attr('stroke', 'grey')
     .attr('fill', '#1f77b4');
 
   console.log(symbol().type(symbolTriangle));
 
   svg
-    .selectAll('charters')
+    .selectAll('triangle')
+    // .append('g')
     .data(data)
     .join('path')
     .filter(d => {
       return d.Year === 2018;
     })
     .attr('class', 'charters')
-
-    // .attr('cx', d => xScale(d[xDim]))
-    // .attr('cy', d => yScale(d[yDim]))
     .attr(
       'd',
       symbol()
@@ -100,9 +98,22 @@ function myVis(data) {
         'translate(' + xScale(d[xDim]) + ',' + yScale(d[yDim]) + ') rotate(30)'
       );
     })
-
-    // .attr('stroke', 'grey')
     .attr('fill', '#aec7e8');
+
+  svg
+    .selectAll('text')
+    .join('text')
+    .attr('class', 'charters')
+    .data(data.filter(d => d.Year === 2012))
+    // .filter(d => {
+    //   console.log('made it');
+    //   return ;
+    // })
+    .attr('x', d => xScale(d[xDim] - 10))
+    .attr('y', d => yScale(d[yDim] - 20))
+    .text(d => d[yDim]);
+
+  console.log('made it here');
 
   // svg
   //   .selectAll('connect-line')
@@ -123,4 +134,10 @@ function myVis(data) {
     .attr('class', 'x-axis')
     .attr('transform', `translate(0, ${plotHeight})`)
     .call(axisBottom(xScale).ticks(10, '.0%'));
+
+  svg
+    .append('g')
+    .attr('class', 'y-axis')
+    // .attr('transform', `translate(${}, 0)`)
+    .call(axisLeft(yScale).ticks(10, '.0%'));
 }
