@@ -21,9 +21,9 @@ json('./data/state_covid.json')
 // [[{year: 2018}, {year: 2012, state: "WA"}], ...]
 
 function myVis(data) {
+  // my bad iterative function
   function prepData(data) {
     const len = data.length;
-    // const halfLen = len / 2;
     let fullArr = [];
 
     for (let i = 0; i < len; i++) {
@@ -41,8 +41,6 @@ function myVis(data) {
 
     return fullArr;
   }
-
-  const preppedData = prepData(data);
 
   const height = 700;
   const width = 700;
@@ -81,6 +79,8 @@ function myVis(data) {
 
   // [[{year: 2018}, {year: 2012, state: "WA"}], ...]
   // const preppedData = [];
+  const preppedData = prepData(data);
+
   svg
     .selectAll('.line-between')
     .data(preppedData)
@@ -93,7 +93,6 @@ function myVis(data) {
 
   svg
     .selectAll('.circle')
-    // .append('g')
     .data(data)
     .join('circle')
     .filter(d => {
@@ -107,7 +106,7 @@ function myVis(data) {
 
   svg
     .selectAll('.triangle')
-    // .append('g')
+    .append('g')
     .data(data)
     .join('path')
     .filter(d => {
@@ -130,12 +129,13 @@ function myVis(data) {
   svg
     .selectAll('.text')
     .join('text')
+    .append('g')
     .attr('class', 'text')
     .filter(d => {
       return d.Year === 2012;
     })
-    .attr('x', d => xScale(d[xDim] - 10))
-    .attr('y', d => yScale(d[yDim] - 20))
+    .attr('x', d => xScale(d[xDim]))
+    .attr('y', d => yScale(d[yDim]))
     .text(d => d[yDim]);
 
   svg
@@ -147,6 +147,6 @@ function myVis(data) {
   svg
     .append('g')
     .attr('class', 'y-axis')
-    // .attr('transform', `translate(${}, 0)`)
+    .attr('transform', `translate(-5, 0)`)
     .call(axisLeft(yScale).ticks(10, '.0%'));
 }
