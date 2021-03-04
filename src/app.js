@@ -8,7 +8,7 @@ import {axisTop, axisRight} from 'd3-axis';
 import {scaleLinear, scaleTime, scaleBand} from 'd3-scale';
 import {extent, min, max} from 'd3-array';
 import {axisBottom, axisLeft} from 'd3-axis';
-import {symbol, symbolTriangle} from 'd3-shape';
+import {symbol, symbolTriangle, line} from 'd3-shape';
 // this command imports the css file, if you remove it your css wont be applied!
 import './main.css';
 
@@ -23,6 +23,7 @@ function getUnique(data, key) {
 }
 
 json('./data/state_covid.json')
+  .then(x => x.filter(({Year}) => 2012 && Year <= 2018))
   .then(data => myVis(data))
   .catch(e => {
     console.log(e);
@@ -30,8 +31,8 @@ json('./data/state_covid.json')
   });
 
 function myVis(data) {
-  const height = 600;
-  const width = 600;
+  const height = 700;
+  const width = 700;
   const margin = {top: 60, left: 60, right: 60, bottom: 60};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
@@ -55,6 +56,10 @@ function myVis(data) {
     .domain(yDomain)
     .range([0, plotHeight]);
 
+  const lineScale = line()
+    .x(d => xScale(d[xDim]))
+    .y(d => yScale(d[yDim]));
+
   const svg = select('.charters')
     .append('svg')
     .attr('height', height)
@@ -75,8 +80,6 @@ function myVis(data) {
     .attr('cy', d => yScale(d[yDim]))
     .attr('r', 4)
     .attr('fill', '#1f77b4');
-
-  console.log(symbol().type(symbolTriangle));
 
   svg
     .selectAll('triangle')
@@ -101,33 +104,25 @@ function myVis(data) {
     .attr('fill', '#aec7e8');
 
   svg
-    .selectAll('text')
-    .join('text')
-    .attr('class', 'charters')
-    .data(data.filter(d => d.Year === 2012))
-    // .filter(d => {
-    //   console.log('made it');
-    //   return ;
-    // })
-    .attr('x', d => xScale(d[xDim] - 10))
-    .attr('y', d => yScale(d[yDim] - 20))
-    .text(d => d[yDim]);
-
-  console.log('made it here');
+    .selectAll('line-between')
+    .data([data])
+    .join('path')
+    .attr('d', d => lineScale(d))
+    .attr('stroke', '#fba55c')
+    .attr('fill', 'none');
 
   // svg
-  //   .selectAll('connect-line')
-  //   .data(data)
-  //   .join('circle')
-  //   .filter(d => {
-  //     return d.Year === 2018;
-  //   })
-  //   .attr('class', 'connect-line')
-  //   .attr('cx', d => xScale(d[xDim]))
-  //   .attr('cy', d => yScale(d[yDim]))
-  //   .attr('r', 4)
-  //   // .attr('stroke', 'grey')
-  //   .attr('fill', '#aec7e8');
+  //   .selectAll('text')
+  //   .join('text')
+  //   .attr('class', 'charters')
+  //   .data(data.filter(d => d.Year === 2012))
+  //   // .filter(d => {
+  //   //   console.log('made it');
+  //   //   return ;
+  //   // })
+  //   .attr('x', d => xScale(d[xDim] - 10))
+  //   .attr('y', d => yScale(d[yDim] - 20))
+  //   .text(d => d[yDim]);
 
   svg
     .append('g')
