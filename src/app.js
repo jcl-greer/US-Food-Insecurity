@@ -148,5 +148,5 @@ function myVis(data) {
     .append('g')
     .attr('class', 'y-axis')
     .attr('transform', `translate(-5, 0)`)
-    .call(axisLeft(yScale).ticks(10, '.0%'));
+    .call(axisLeft(yScale));
 }
