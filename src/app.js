@@ -1,7 +1,3 @@
-// if the data you are going to import is small, then you can import it using es6 import
-// (I like to use use screaming snake case for imported json)
-// import MY_DATA from './app/data/example.json'
-
 import {select} from 'd3-selection';
 import {csv, json} from 'd3-fetch';
 import {axisTop, axisRight} from 'd3-axis';
@@ -9,14 +5,7 @@ import {scaleLinear, scaleTime, scaleBand} from 'd3-scale';
 import {extent, min, max} from 'd3-array';
 import {axisBottom, axisLeft} from 'd3-axis';
 import {symbol, symbolTriangle, line} from 'd3-shape';
-// this command imports the css file, if you remove it your css wont be applied!
 import './main.css';
-
-// this is just one example of how to import data. there are lots of ways to do it!
-// csv('./data/state_covid.csv' function(d) {
-//   return {
-//   }
-// }
 
 function getUnique(data, key) {
   return data.reduce((acc, row) => acc.add(row[key]), new Set());
@@ -27,10 +16,34 @@ json('./data/state_covid.json')
   .then(data => myVis(data))
   .catch(e => {
     console.log(e);
-    console.log('This SUCKS!');
   });
 
+// [[{year: 2018}, {year: 2012, state: "WA"}], ...]
+
 function myVis(data) {
+  function prepData(data) {
+    const len = data.length;
+    // const halfLen = len / 2;
+    let fullArr = [];
+
+    for (let i = 0; i < len; i++) {
+      for (let j = 0; j < len; j++) {
+        let rowArr = [];
+        if (data[i].State === data[j].State && data[i].Year !== data[j].Year) {
+          console.log(data[i], data[j]);
+          rowArr.push(data[i]);
+          rowArr.push(data[j]);
+          fullArr.push(rowArr);
+        }
+      }
+    }
+    console.log('the full arr is ', fullArr);
+
+    return fullArr;
+  }
+
+  const preppedData = prepData(data);
+
   const height = 700;
   const width = 700;
   const margin = {top: 60, left: 60, right: 60, bottom: 60};
@@ -46,7 +59,6 @@ function myVis(data) {
   console.log(extent(data, d => d[yDim]));
 
   console.log(data, height);
-  console.log('Hi!');
 
   const xScale = scaleLinear()
     .domain(extent(data, d => d[xDim]))
@@ -67,29 +79,41 @@ function myVis(data) {
     .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
+  // [[{year: 2018}, {year: 2012, state: "WA"}], ...]
+  // const preppedData = [];
   svg
-    .selectAll('circle')
+    .selectAll('.line-between')
+    .data(preppedData)
+    .join('path')
+    .attr('class', 'line-between')
+    .attr('d', d => lineScale(d))
+    .attr('stroke', '#fba55c')
+    .attr('stroke-width', '2')
+    .attr('fill', 'none');
+
+  svg
+    .selectAll('.circle')
     // .append('g')
     .data(data)
     .join('circle')
     .filter(d => {
       return d.Year === 2012;
     })
-    .attr('class', 'charters')
+    .attr('class', 'circle')
     .attr('cx', d => xScale(d[xDim]))
     .attr('cy', d => yScale(d[yDim]))
     .attr('r', 4)
     .attr('fill', '#1f77b4');
 
   svg
-    .selectAll('triangle')
+    .selectAll('.triangle')
     // .append('g')
     .data(data)
     .join('path')
     .filter(d => {
       return d.Year === 2018;
     })
-    .attr('class', 'charters')
+    .attr('class', 'triangle')
     .attr(
       'd',
       symbol()
@@ -104,25 +128,15 @@ function myVis(data) {
     .attr('fill', '#aec7e8');
 
   svg
-    .selectAll('line-between')
-    .data([data])
-    .join('path')
-    .attr('d', d => lineScale(d))
-    .attr('stroke', '#fba55c')
-    .attr('fill', 'none');
-
-  // svg
-  //   .selectAll('text')
-  //   .join('text')
-  //   .attr('class', 'charters')
-  //   .data(data.filter(d => d.Year === 2012))
-  //   // .filter(d => {
-  //   //   console.log('made it');
-  //   //   return ;
-  //   // })
-  //   .attr('x', d => xScale(d[xDim] - 10))
-  //   .attr('y', d => yScale(d[yDim] - 20))
-  //   .text(d => d[yDim]);
+    .selectAll('.text')
+    .join('text')
+    .attr('class', 'text')
+    .filter(d => {
+      return d.Year === 2012;
+    })
+    .attr('x', d => xScale(d[xDim] - 10))
+    .attr('y', d => yScale(d[yDim] - 20))
+    .text(d => d[yDim]);
 
   svg
     .append('g')
