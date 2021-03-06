@@ -5,6 +5,7 @@ import {scaleLinear, scaleTime, scaleBand} from 'd3-scale';
 import {extent, min, max} from 'd3-array';
 import {axisBottom, axisLeft} from 'd3-axis';
 import {symbol, symbolTriangle, line} from 'd3-shape';
+import {transition} from 'd3-transition';
 import './main.css';
 
 function getUnique(data, key) {
@@ -91,10 +92,36 @@ function myVis(data) {
     .attr('stroke-width', '2')
     .attr('fill', 'none');
 
+  // svg
+  //   .selectAll('.circle')
+  //   .data(data)
+  //   .join('circle')
+  //   .filter(d => {
+  //     return d.Year === 2012;
+  //   })
+  //   .attr('class', 'circle')
+  //   .attr('cx', d => xScale(d[xDim]))
+  //   .attr('cy', d => yScale(d[yDim]))
+  //   .attr('r', 4)
+  //   .attr('fill', '#1f77b4');
+  // const t = transition().duration(300);
+
   svg
     .selectAll('.circle')
     .data(data)
-    .join('circle')
+    .join(
+      enter =>
+        enter
+          .append('circle')
+          .transition()
+          .duration(300)
+          .attr('cx', d => xScale(d[xDim]))
+          .attr('cy', d => yScale(d[yDim])),
+      update =>
+        update.call(el =>
+          el.attr('cx', d => xScale(d[xDim])).attr('cy', d => yScale(d[yDim])),
+        ),
+    )
     .filter(d => {
       return d.Year === 2012;
     })
@@ -126,17 +153,18 @@ function myVis(data) {
     })
     .attr('fill', '#aec7e8');
 
-  svg
-    .selectAll('.text')
-    .join('text')
-    .append('g')
-    .attr('class', 'text')
-    .filter(d => {
-      return d.Year === 2012;
-    })
-    .attr('x', d => xScale(d[xDim]))
-    .attr('y', d => yScale(d[yDim]))
-    .text(d => d[yDim]);
+  // huh huh huh
+  // svg
+  //   .selectAll('.text')
+  //   .join('text')
+  //   .append('g')
+  //   .attr('class', 'text')
+  //   .filter(d => {
+  //     return d.Year === 2012;
+  //   })
+  //   .attr('x', d => xScale(d[xDim]))
+  //   .attr('y', d => yScale(d[yDim]))
+  //   .text(d => d[yDim]);
 
   svg
     .append('g')
@@ -149,4 +177,58 @@ function myVis(data) {
     .attr('class', 'y-axis')
     .attr('transform', `translate(-5, 0)`)
     .call(axisLeft(yScale));
+
+  // Legends and Titles
+  svg
+    .append('rect')
+    .attr('class', 'triangle')
+    .attr('x', plotWidth / 15)
+    .attr('y', plotHeight / 25)
+    .attr('width', 8)
+    .attr('height', 8)
+    .attr('fill', '#aec7e8');
+
+  svg
+    .append('rect')
+    .attr('class', 'circle')
+    .attr('x', plotWidth / 15)
+    .attr('y', plotHeight / 15)
+    .attr('width', 8)
+    .attr('height', 8)
+    .attr('fill', '#1f77b4');
+
+  svg
+    .append('text')
+    .attr('x', plotWidth / 11)
+    .attr('y', plotHeight / 12.4)
+    .text('2018')
+    .style('font-size', '12px')
+    .attr('alignment-baseline', 'middle');
+
+  svg
+    .append('text')
+    .attr('x', plotWidth / 11)
+    .attr('y', plotHeight / 19)
+    .text('2012')
+    .style('font-size', '12px')
+    .attr('alignment-baseline', 'middle');
+
+  svg
+    .append('g')
+    .append('text')
+    .attr('class', 'title')
+    .attr('text-anchor', 'middle')
+    .attr('x', plotWidth / 2)
+    .attr('y', 0 - margin.top / 2)
+    .attr('font-size', 18)
+    .text('Insecurity Rates Dropped Among All States from 2012 to 2018');
+  svg
+    .append('g')
+    .append('text')
+    .attr('class', 'x-label')
+    .attr('text-anchor', 'middle')
+    .attr('x', plotWidth / 2)
+    .attr('y', plotHeight + 30)
+    .text('Food Insecurity Rate')
+    .attr('font-size', 14);
 }
