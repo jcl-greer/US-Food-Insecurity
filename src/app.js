@@ -4,8 +4,11 @@ import {scaleLinear, scaleTime, scaleBand} from 'd3-scale';
 import {extent, min, max} from 'd3-array';
 import {axisBottom, axisLeft} from 'd3-axis';
 import {symbol, symbolTriangle, line} from 'd3-shape';
-import {transition} from 'd3-transition';
+import {transition, easeLinear} from 'd3-transition';
 import './main.css';
+
+// very helpful resource on transitions
+// https://observablehq.com/@d3/selection-join
 
 function getUnique(data, key) {
   return data.reduce((acc, row) => acc.add(row[key]), new Set());
@@ -13,14 +16,14 @@ function getUnique(data, key) {
 
 json('./data/state_covid.json')
   .then(x => x.filter(({Year}) => 2012 && Year <= 2018))
-  .then(data => myVis(data))
+  .then(data => arrow2(data))
   .catch(e => {
     console.log(e);
   });
 
 // [[{year: 2018}, {year: 2012, state: "WA"}], ...]
 
-function myVis(data) {
+function arrow2(data) {
   // my bad iterative function
   function prepData(data) {
     const len = data.length;
@@ -80,8 +83,20 @@ function myVis(data) {
   // [[{year: 2018}, {year: 2012, state: "WA"}], ...]
   // const preppedData = [];
   const preppedData = prepData(data);
+  const t3 = transition().duration(1000);
 
-  svg
+  // static lines
+  // svg
+  //   .selectAll('.line-between')
+  //   .data(preppedData)
+  //   .join('path')
+  //   .attr('class', 'line-between')
+  //   .attr('d', d => lineScale(d))
+  //   .attr('stroke', '#fba55c')
+  //   .attr('stroke-width', '2')
+  //   .attr('fill', 'none');
+
+  let lines = svg
     .selectAll('.line-between')
     .data(preppedData)
     .join('path')
@@ -90,48 +105,102 @@ function myVis(data) {
     .attr('stroke', '#fba55c')
     .attr('stroke-width', '2')
     .attr('fill', 'none');
+  // .style('opacity', 0);
 
+  lines
+    .attr('stroke-dashoffset', function(d) {
+      // Get the path length of the current element
+      const pathLength = this.getTotalLength();
+      console.log(' the path length is ', pathLength);
+      return `${pathLength}`;
+    })
+
+    .attr('stroke-dasharray', function(d) {
+      // Get the path length of the current element
+      const pathLength = this.getTotalLength();
+      console.log(' the path length is ', pathLength);
+      return `${2 * pathLength}`;
+    })
+    .transition()
+    .delay((d, i) => i * 7)
+    // .ease(easeLinear)
+    .style('opacity', 1)
+    .duration(2200)
+    .attr('stroke-dashoffset', 0);
   // working static circles
-  // svg
-  //   .selectAll('.circle')
-  //   .data(data)
-  //   .join('circle')
-  //   .filter(d => {
-  //     return d.Year === 2012;
-  //   })
-  //   .attr('class', 'circle')
-  //   .attr('cx', d => xScale(d[xDim]))
-  //   .attr('cy', d => yScale(d[yDim]))
-  //   .attr('r', 4)
-  //   .attr('fill', '#1f77b4');
-  const t = transition().duration(1600);
-  console.log('t is isfdssfdsdf', t);
-
-  // not working transition circles
   svg
     .selectAll('.circle')
     .data(data)
-
-    .join(enter =>
-      enter.append('circle').call(el =>
-        el
-          .transition(t)
-          .attr('cy', d => yScale(d[yDim]))
-          .attr('cx', d => xScale(d[xDim])),
-      ),
-    )
-    .attr('class', 'circle')
+    .join('circle')
     .filter(d => {
       return d.Year === 2012;
     })
+    .attr('class', 'circle')
+    .attr('cx', d => xScale(d[xDim]))
+    .attr('cy', d => yScale(d[yDim]))
     .attr('r', 4)
     .attr('fill', '#1f77b4');
 
+  // const t = transition().duration(1500);
+  // console.log('t is isfdssfdsdf', t);
+
+  // working transition circles
+  // svg
+  //   .selectAll('.circle')
+  //   .data(data)
+
+  //   .join(enter =>
+  //     enter
+  //       .append('circle')
+  //       .attr('cy', d => yScale(d[yDim]) * 0)
+  //       .attr('cx', d => xScale(d[xDim]) * 1.5)
+  //       .call(el =>
+  //         el
+  //           .transition(t)
+  //           .attr('cy', d => yScale(d[yDim]))
+  //           .attr('cx', d => xScale(d[xDim])),
+  //       ),
+  //   )
+  //   .attr('class', 'circle')
+  //   .filter(d => {
+  //     return d.Year === 2012;
+  //   })
+  //   .attr('r', 4)
+  //   .attr('fill', '#1f77b4');
+
+  const t = transition().duration(1600);
   svg
     .selectAll('.triangle')
     .append('g')
     .data(data)
-    .join('path')
+    .join(enter =>
+      enter
+        .append('path')
+        .attr('transform', function(d) {
+          return (
+            'translate(' +
+            xScale(d[xDim]) * 3 +
+            ',' +
+            yScale(d[yDim]) +
+            ') rotate(30)'
+          );
+        })
+        .call(el =>
+          el
+            .transition(t)
+            .delay((d, i) => i * 5)
+            .attr('transform', function(d) {
+              return (
+                'translate(' +
+                xScale(d[xDim]) +
+                ',' +
+                yScale(d[yDim]) +
+                ') rotate(30)'
+              );
+            }),
+        ),
+    )
+
     .filter(d => {
       return d.Year === 2018;
     })
@@ -142,12 +211,30 @@ function myVis(data) {
         .type(symbolTriangle)
         .size(35),
     )
-    .attr('transform', function(d) {
-      return (
-        'translate(' + xScale(d[xDim]) + ',' + yScale(d[yDim]) + ') rotate(30)'
-      );
-    })
     .attr('fill', '#aec7e8');
+
+  // static triangles - this works
+  // svg
+  //   .selectAll('.triangle')
+  //   .append('g')
+  //   .data(data)
+  //   .join('path')
+  //   .filter(d => {
+  //     return d.Year === 2018;
+  //   })
+  //   .attr('class', 'triangle')
+  //   .attr(
+  //     'd',
+  //     symbol()
+  //       .type(symbolTriangle)
+  //       .size(35),
+  //   )
+  //   .attr('transform', function(d) {
+  //     return (
+  //       'translate(' + xScale(d[xDim]) + ',' + yScale(d[yDim]) + ') rotate(30)'
+  //     );
+  //   })
+  //   .attr('fill', '#aec7e8');
 
   // huh huh huh
   // svg
