@@ -1,6 +1,5 @@
 import {select} from 'd3-selection';
 import {csv, json} from 'd3-fetch';
-import {axisTop, axisRight} from 'd3-axis';
 import {scaleLinear, scaleTime, scaleBand} from 'd3-scale';
 import {extent, min, max} from 'd3-array';
 import {axisBottom, axisLeft} from 'd3-axis';
@@ -92,6 +91,7 @@ function myVis(data) {
     .attr('stroke-width', '2')
     .attr('fill', 'none');
 
+  // working static circles
   // svg
   //   .selectAll('.circle')
   //   .data(data)
@@ -104,30 +104,26 @@ function myVis(data) {
   //   .attr('cy', d => yScale(d[yDim]))
   //   .attr('r', 4)
   //   .attr('fill', '#1f77b4');
-  // const t = transition().duration(300);
+  const t = transition().duration(1600);
+  console.log('t is isfdssfdsdf', t);
 
+  // not working transition circles
   svg
     .selectAll('.circle')
     .data(data)
-    .join(
-      enter =>
-        enter
-          .append('circle')
-          .transition()
-          .duration(300)
-          .attr('cx', d => xScale(d[xDim]))
-          .attr('cy', d => yScale(d[yDim])),
-      update =>
-        update.call(el =>
-          el.attr('cx', d => xScale(d[xDim])).attr('cy', d => yScale(d[yDim])),
-        ),
+
+    .join(enter =>
+      enter.append('circle').call(el =>
+        el
+          .transition(t)
+          .attr('cy', d => yScale(d[yDim]))
+          .attr('cx', d => xScale(d[xDim])),
+      ),
     )
+    .attr('class', 'circle')
     .filter(d => {
       return d.Year === 2012;
     })
-    .attr('class', 'circle')
-    .attr('cx', d => xScale(d[xDim]))
-    .attr('cy', d => yScale(d[yDim]))
     .attr('r', 4)
     .attr('fill', '#1f77b4');
 
