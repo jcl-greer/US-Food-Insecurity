@@ -16,3 +16,36 @@ body {
 #app {
   font-family: 'Gill Sans MT'
 }
+
+.flex {
+  display: flex;
+}
+
+.flex-down {
+  display: flex;
+  flex-direction: column;
+}
+
+#slide-detail {
+  width: 250px;
+  min-width: 250px;
+  border-right: thin solid black;
+  height: 700px;
+  padding: 20px
+}
+
+/* 
+#slide-content {
+
+} */
+
+
+.progress-dot {
+  height: 20px;
+  width: 20px;
+  background-color: cornflowerblue;
+  display: inline-block;
+  margin: 5px;
+  cursor: pointer;
+}
+
