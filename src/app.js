@@ -7,12 +7,12 @@ import {symbol, symbolTriangle, line} from 'd3-shape';
 import {transition, easeLinear} from 'd3-transition';
 import './main.css';
 import arrow1 from './charts/arrow1_trial';
+import arrow2 from './charts/arrow2_trial';
 
 // very helpful resource on transitions
 // https://observablehq.com/@d3/selection-join
 
 json('./data/state_covid.json')
-  .then(x => x.filter(({Year}) => 2012 && Year <= 2018))
   .then(main)
   .catch(e => {
     console.log(e);
@@ -33,7 +33,7 @@ const slides = [
     content:
       'Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
     render: data => {
-      return null;
+      arrow2(data);
     },
   },
 
@@ -47,18 +47,6 @@ const slides = [
   },
 ];
 
-function drawProgress() {
-  const numData = [...new Array(slides.length)].map((_, idx) => idx);
-  select('#progress')
-    .selectAll('.progress-dot')
-    .data(numData)
-    .join('div')
-    .attr('class', 'progress-dot')
-    .style('background-color', idx =>
-      currentSlideIdx < idx ? 'cornflower-blue' : 'black',
-    );
-}
-
 function main(data) {
   // state
   console.log('The data is ', data);
@@ -66,18 +54,32 @@ function main(data) {
   const updateState = newIdx => {
     currentSlideIdx = newIdx;
     renderSlide();
+    drawProgress();
   };
 
   // configuration stuff
+
   const header = select('#slide-detail h1');
   const body = select('#slide-detail p');
 
-  select('#prev').on('click', () => {
-    updateState(currentSlideIdx ? currentSlideIdx - 1 : slides.length - 1);
-  });
-  select('#next').on('click', () => {
-    updateState((currentSlideIdx + 1) % slides.length);
-  });
+  select('#prev').on('click', () =>
+    updateState(currentSlideIdx ? currentSlideIdx - 1 : slides.length - 1),
+  );
+  select('#next').on('click', () =>
+    updateState((currentSlideIdx + 1) % slides.length),
+  );
+
+  function drawProgress() {
+    const numData = [...new Array(slides.length)].map((_, idx) => idx);
+    select('#progress')
+      .selectAll('.progress-dot')
+      .data(numData)
+      .join('div')
+      .attr('class', 'progress-dot')
+      .style('background-color', idx =>
+        currentSlideIdx < idx ? 'cornflower-blue' : 'black',
+      );
+  }
 
   // draw loop
   function renderSlide() {

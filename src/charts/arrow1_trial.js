@@ -21,7 +21,9 @@ import {transition, easeLinear} from 'd3-transition';
 //   });
 
 export default function(initialData) {
-  // my bad iterative function
+  if (!select('svg').empty()) {
+    select('svg').remove();
+  }
   let data = initialData.filter(({Year}) => 2012 && Year <= 2018);
 
   function getUnique(data, key) {
