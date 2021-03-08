@@ -3,7 +3,7 @@ import {csv, json} from 'd3-fetch';
 import {scaleLinear, scaleTime, scaleBand} from 'd3-scale';
 import {extent, min, max} from 'd3-array';
 import {axisBottom, axisLeft} from 'd3-axis';
-import {symbol, symbolTriangle, line} from 'd3-shape';
+import {symbol, symbolTriangle, symbolCircle, line} from 'd3-shape';
 import {transition, easeLinear} from 'd3-transition';
 
 // very helpful resource on transitions
@@ -92,15 +92,16 @@ export default function(data) {
     .attr('stroke-dashoffset', function(d) {
       // Get the path length of the current element
       const pathLength = this.getTotalLength();
+      console.log('d is ', d, pathLength);
       // console.log(' the path length is ', pathLength);
-      return `${-pathLength}`;
+      return `${0 - pathLength}`;
     })
 
     .attr('stroke-dasharray', function(d) {
       // Get the path length of the current element
       const pathLength = this.getTotalLength();
       // console.log(' the path length is ', pathLength);
-      return `${2 * pathLength}`;
+      return `${pathLength}`;
     })
     .transition()
     .delay((d, i) => i * 3)
@@ -236,11 +237,12 @@ export default function(data) {
     .filter(d => {
       return d.Year === 2018;
     })
-    .attr('x', d => -22 + xScale(d[xDim]))
+    .attr('x', d => -23 + xScale(d[xDim]))
     .attr('y', d => 3 + yScale(d[yDim]))
     .text(d => d[yDim])
     .attr('font-size', '10.5px')
-    .attr('fill', '#aec7e8');
+    .attr('fill', '#aec7e8')
+    .attr('font-weight', '600');
 
   svg
     .append('g')
