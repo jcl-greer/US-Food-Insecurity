@@ -135,7 +135,7 @@ export default function(initialData) {
     .append('text')
     .attr('x', plotWidth / 5)
     .attr('y', plotHeight / 13)
-    .text('2018')
+    .text('2012')
     .style('font-size', '12px')
     .attr('alignment-baseline', 'middle');
 

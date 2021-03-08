@@ -139,7 +139,7 @@ export default function(data) {
             .attr('class', 'rect')
             .attr('opacity', d => {
               if (d.Year === 2012) {
-                return 0.65;
+                return 0.75;
               } else {
                 return 0;
               }
@@ -156,21 +156,6 @@ export default function(data) {
     })
 
     .attr('fill', '#1f77b4');
-
-  // // svg
-  // //   .selectAll('.rect')
-  // //   .data(data)
-  // //   .join('rect')
-  // //   .attr('y', d => yScale(d[yDim]) - 5)
-  // //   .attr('x', d => xScale(d[xDim]))
-  // //   .attr('opacity', 0.65)
-  // //   .attr('class', 'rect')
-  // //   .filter(d => {
-  // //     return d.Year === 2012;
-  //   })
-  //   .attr('width', 3)
-  //   .attr('height', 10)
-  //   .attr('fill', '#1f77b4');
 
   svg
     .selectAll('.circle')
@@ -271,7 +256,7 @@ export default function(data) {
     .attr('y', plotHeight / 25)
     .attr('width', 8)
     .attr('height', 8)
-    .attr('fill', '#aec7e8');
+    .attr('fill', '#1f77b4');
 
   svg
     .append('rect')
@@ -280,7 +265,9 @@ export default function(data) {
     .attr('y', plotHeight / 15)
     .attr('width', 8)
     .attr('height', 8)
-    .attr('fill', '#1f77b4');
+    .attr('fill', '#aec7e8');
+
+  // '#1f77b4'
   svg
     .append('rect')
     .attr('class', 'red-triangle')

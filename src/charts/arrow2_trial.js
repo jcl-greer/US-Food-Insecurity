@@ -224,7 +224,7 @@ export default function(initialData) {
     .attr('y', plotHeight / 25)
     .attr('width', 8)
     .attr('height', 8)
-    .attr('fill', '#aec7e8');
+    .attr('fill', '#1f77b4');
 
   svg
     .append('rect')
@@ -233,7 +233,7 @@ export default function(initialData) {
     .attr('y', plotHeight / 15)
     .attr('width', 8)
     .attr('height', 8)
-    .attr('fill', '#1f77b4');
+    .attr('fill', '#aec7e8');
 
   svg
     .append('text')
