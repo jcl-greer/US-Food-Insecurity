@@ -111,40 +111,66 @@ export default function(data) {
   const t = transition().duration(1600);
   const t1 = transition().duration(1000);
 
-  // svg
-  //   .selectAll('.rect')
-  //   .data(data)
-  //   .join(enter =>
-  //     enter
-  //       .append('rect')
-  //       .attr('y', d => yScale(d[yDim]) - 5)
-  //       .attr('x', d => xScale(d[xDim]))
-  //       .attr('opacity', 0)
-  //       .call(el => el.transition(t).attr('opacity', 0.65)),
-  //   )
-  //   .attr('class', 'rect')
-  //   .filter(d => {
-  //     return d.Year === 2012;
-  //   })
-  //   // .attr('r', 4)
-  //   .attr('width', 4)
-  //   .attr('height', 10)
-  //   .attr('fill', '#1f77b4');
-
   svg
     .selectAll('.rect')
     .data(data)
-    .join('rect')
-    .attr('y', d => yScale(d[yDim]) - 5)
-    .attr('x', d => xScale(d[xDim]))
-    .attr('opacity', 0.65)
-    .attr('class', 'rect')
+    .join(enter =>
+      enter
+        .append('rect')
+        .attr('rx', 100)
+        .attr('ry', 100)
+        .attr('x', d => xScale(d[xDim]) - 4)
+        .attr('y', d => yScale(d[yDim]) - 4)
+        .attr('class', 'rect')
+        .attr('opacity', d => {
+          if (d.Year === 2012) {
+            return 1;
+          } else {
+            return 0;
+          }
+        })
+        .attr('width', 8)
+        .attr('height', 8)
+        .call(el =>
+          el
+            .transition(t)
+            .attr('rx', 0)
+            .attr('ry', 0)
+            .attr('class', 'rect')
+            .attr('opacity', d => {
+              if (d.Year === 2012) {
+                return 0.65;
+              } else {
+                return 0;
+              }
+            })
+            .attr('x', d => xScale(d[xDim]) - 1.5)
+            .attr('y', d => yScale(d[yDim]) - 5)
+            .attr('width', 3)
+            .attr('height', 10),
+        ),
+    )
+
     .filter(d => {
       return d.Year === 2012;
     })
-    .attr('width', 3)
-    .attr('height', 10)
+
     .attr('fill', '#1f77b4');
+
+  // // svg
+  // //   .selectAll('.rect')
+  // //   .data(data)
+  // //   .join('rect')
+  // //   .attr('y', d => yScale(d[yDim]) - 5)
+  // //   .attr('x', d => xScale(d[xDim]))
+  // //   .attr('opacity', 0.65)
+  // //   .attr('class', 'rect')
+  // //   .filter(d => {
+  // //     return d.Year === 2012;
+  //   })
+  //   .attr('width', 3)
+  //   .attr('height', 10)
+  //   .attr('fill', '#1f77b4');
 
   svg
     .selectAll('.circle')
