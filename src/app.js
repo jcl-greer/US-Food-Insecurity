@@ -8,6 +8,7 @@ import {transition, easeLinear} from 'd3-transition';
 import './main.css';
 import arrow1 from './charts/arrow1_trial';
 import arrow2 from './charts/arrow2_trial';
+import arrow3 from './charts/arrow3_trial';
 
 // very helpful resource on transitions
 // https://observablehq.com/@d3/selection-join
@@ -42,7 +43,7 @@ const slides = [
     content:
       'Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
     render: data => {
-      return null;
+      arrow3(data);
     },
   },
 ];

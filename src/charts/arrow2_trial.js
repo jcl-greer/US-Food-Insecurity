@@ -10,6 +10,9 @@ import {transition, easeLinear} from 'd3-transition';
 // very helpful resource on transitions
 // https://observablehq.com/@d3/selection-join
 
+// helpful for potential shape changes
+// https://stackoverflow.com/questions/17437408/how-to-change-a-circle-into-a-square-with-d3-js
+
 // [[{year: 2018}, {year: 2012, state: "WA"}], ...]
 
 export default function(initialData) {
@@ -114,18 +117,36 @@ export default function(initialData) {
     .style('opacity', 1)
     .duration(2200)
     .attr('stroke-dashoffset', 0);
+
   // working static circles
+  // svg
+  //   .selectAll('.circle')
+  //   .data(data)
+  //   .join('circle')
+  //   .filter(d => {
+  //     return d.Year === 2012;
+  //   })
+  //   .attr('class', 'circle')
+  //   .attr('cx', d => xScale(d[xDim]))
+  //   .attr('cy', d => yScale(d[yDim]))
+  //   .attr('r', 4)
+  //   .attr('fill', '#1f77b4');
+
+  // secret circle rect
   svg
     .selectAll('.circle')
     .data(data)
-    .join('circle')
+    .join('rect')
     .filter(d => {
       return d.Year === 2012;
     })
     .attr('class', 'circle')
-    .attr('cx', d => xScale(d[xDim]))
-    .attr('cy', d => yScale(d[yDim]))
-    .attr('r', 4)
+    .attr('rx', 100)
+    .attr('ry', 100)
+    .attr('x', d => xScale(d[xDim]) - 4)
+    .attr('y', d => yScale(d[yDim]) - 4)
+    .attr('width', 8)
+    .attr('height', 8)
     .attr('fill', '#1f77b4');
 
   const t = transition().duration(1600);

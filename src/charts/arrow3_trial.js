@@ -5,22 +5,20 @@ import {extent, min, max} from 'd3-array';
 import {axisBottom, axisLeft} from 'd3-axis';
 import {symbol, symbolTriangle, line} from 'd3-shape';
 import {transition, easeLinear} from 'd3-transition';
-import './main.css';
 
 // very helpful resource on transitions
 // https://observablehq.com/@d3/selection-join
 
-function getUnique(data, key) {
-  return data.reduce((acc, row) => acc.add(row[key]), new Set());
-}
+// json('./data/state_covid.json')
+//   .then(data => arrow3(data))
+//   .catch(e => {
+//     console.log(e);
+//   });
 
-json('./data/state_covid.json')
-  .then(data => arrow3(data))
-  .catch(e => {
-    console.log(e);
-  });
-
-function arrow3(data) {
+export default function(data) {
+  if (!select('svg').empty()) {
+    select('svg').remove();
+  }
   // my bad iterative function
   function prepData(data) {
     const len = data.length;
@@ -38,6 +36,10 @@ function arrow3(data) {
     }
 
     return fullArr;
+  }
+
+  function getUnique(data, key) {
+    return data.reduce((acc, row) => acc.add(row[key]), new Set());
   }
 
   const height = 700;
@@ -65,7 +67,7 @@ function arrow3(data) {
     .x(d => xScale(d[xDim]))
     .y(d => yScale(d[yDim]));
 
-  const svg = select('.charters')
+  const svg = select('#slide-content')
     .append('svg')
     .attr('height', height)
     .attr('width', width)
@@ -107,24 +109,40 @@ function arrow3(data) {
     .attr('stroke-dashoffset', 0);
 
   const t = transition().duration(1600);
+  const t1 = transition().duration(1000);
+
+  // svg
+  //   .selectAll('.rect')
+  //   .data(data)
+  //   .join(enter =>
+  //     enter
+  //       .append('rect')
+  //       .attr('y', d => yScale(d[yDim]) - 5)
+  //       .attr('x', d => xScale(d[xDim]))
+  //       .attr('opacity', 0)
+  //       .call(el => el.transition(t).attr('opacity', 0.65)),
+  //   )
+  //   .attr('class', 'rect')
+  //   .filter(d => {
+  //     return d.Year === 2012;
+  //   })
+  //   // .attr('r', 4)
+  //   .attr('width', 4)
+  //   .attr('height', 10)
+  //   .attr('fill', '#1f77b4');
 
   svg
     .selectAll('.rect')
     .data(data)
-    .join(enter =>
-      enter
-        .append('rect')
-        .attr('y', d => yScale(d[yDim]) - 5)
-        .attr('x', d => xScale(d[xDim]))
-        .attr('opacity', 0)
-        .call(el => el.transition(t).attr('opacity', 0.65)),
-    )
+    .join('rect')
+    .attr('y', d => yScale(d[yDim]) - 5)
+    .attr('x', d => xScale(d[xDim]))
+    .attr('opacity', 0.65)
     .attr('class', 'rect')
     .filter(d => {
       return d.Year === 2012;
     })
-    // .attr('r', 4)
-    .attr('width', 4)
+    .attr('width', 3)
     .attr('height', 10)
     .attr('fill', '#1f77b4');
 
@@ -138,7 +156,7 @@ function arrow3(data) {
         .attr('cy', d => yScale(d[yDim]))
         .attr('cx', d => xScale(d[xDim]))
         .attr('opacity', 0)
-        .call(el => el.transition(t).attr('opacity', 1)),
+        .call(el => el.transition(t1).attr('opacity', 1)),
     )
     .attr('class', 'circle')
     .filter(d => {
@@ -146,6 +164,7 @@ function arrow3(data) {
     })
     .attr('r', 4)
     .attr('fill', '#aec7e8');
+
   svg
     .selectAll('.red-triangle')
     .append('g')
