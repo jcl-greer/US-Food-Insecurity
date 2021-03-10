@@ -110,7 +110,7 @@ export default function(data) {
     .attr('stroke-dashoffset', 0);
 
   const t = transition().duration(1600);
-  const t1 = transition().duration(1000);
+  const t1 = transition().duration(600);
 
   svg
     .selectAll('.rect')

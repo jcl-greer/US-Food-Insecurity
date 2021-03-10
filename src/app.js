@@ -1,7 +1,7 @@
 import {select} from 'd3-selection';
 import {csv, json} from 'd3-fetch';
 import {scaleLinear, scaleTime, scaleBand} from 'd3-scale';
-import {extent, min, max} from 'd3-array';
+import {extent, min, max, sum} from 'd3-array';
 import {axisBottom, axisLeft} from 'd3-axis';
 import {symbol, symbolTriangle, line} from 'd3-shape';
 import {transition, easeLinear} from 'd3-transition';
@@ -9,9 +9,6 @@ import './main.css';
 import arrow1 from './charts/arrow1_trial';
 import arrow2 from './charts/arrow2_trial';
 import arrow3 from './charts/arrow3_trial';
-
-// very helpful resource on transitions
-// https://observablehq.com/@d3/selection-join
 
 json('./data/state_covid.json')
   .then(main)
