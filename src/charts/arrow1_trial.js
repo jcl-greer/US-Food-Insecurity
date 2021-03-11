@@ -5,6 +5,7 @@ import {extent, min, max} from 'd3-array';
 import {axisBottom, axisLeft} from 'd3-axis';
 import {symbol, symbolTriangle, line} from 'd3-shape';
 import {transition, easeLinear} from 'd3-transition';
+import {ease, easeCubicIn, easeBounceOut, easeBackInOut} from 'd3-ease';
 // import './main.css';
 
 // very helpful resource on transitions
@@ -80,7 +81,8 @@ export default function(initialData) {
         .call(el =>
           el
             .transition(t)
-            .delay((d, i) => i * 0.5)
+            // .ease(easeBackInOut.overshoot(0.5))
+            .delay((d, i) => i * 1)
             .attr('cy', d => yScale(d[yDim]))
             .attr('cx', d => xScale(d[xDim])),
         ),
