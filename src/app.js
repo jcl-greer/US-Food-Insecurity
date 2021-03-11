@@ -14,6 +14,8 @@ import arrow1 from './charts/arrow1_trial';
 import arrow2 from './charts/arrow2_trial';
 import arrow3 from './charts/arrow3_trial';
 
+// added a comment
+
 json('./data/state_covid.json')
   .then(main)
   .catch(e => {
