@@ -7,6 +7,7 @@ import {format} from 'd3-format';
 import {symbol, symbolTriangle, line} from 'd3-shape';
 import {scaleQuantile, scaleQuantize} from 'd3-scale';
 import {transition} from 'd3-transition';
+import {schemeBlues, schemeOrRd} from 'd3-scale-chromatic';
 import {geoPath, geoAlbersUsa} from 'd3-geo';
 import * as topojson from 'topojson-client';
 import {ease, easeCubicIn, easeBounceOut, easeBackInOut} from 'd3-ease';
@@ -18,7 +19,6 @@ import arrow2 from './charts/arrow2_trial';
 import arrow3 from './charts/arrow3_trial';
 
 // console.log('the data is ', initialData);
-// let data = initialData.filter(d => d.Year === 2018);
 
 // console.log('The new data is ', data);
 
@@ -34,7 +34,7 @@ Promise.all([
   // .then()
   .catch(e => {
     // handle error here
-    console.log('the error is ', error);
+    console.log('the error is ', e);
   });
 
 // json('./data/states-albers-10m.json')
@@ -54,9 +54,29 @@ function myVis(us, insecure) {
 
   // const xDim = 'Weighted Annual Food Budget Shortfall';
   // const yDim = 'Annual Food Budget Shortfall Per 100000';
+  const colorDim = 'Food Insecurity Rate';
 
-  // viewof state = {
-  //   let value = null;
+  const color = scaleQuantize()
+    .domain([0.02, 0.35])
+    .range(schemeOrRd[9]);
+
+  insecure = insecure.filter(d => d.Year === 2018);
+
+  let data = insecure.reduce(
+    (obj, item) => Object.assign(obj, {[item.id]: item[colorDim]}),
+    {},
+  );
+
+  console.log('the object is ', data);
+
+  // let data = Object.assign(
+  //   new Map(insecure),
+  //   ({state, rate}) => [state, +rate],
+  //   {
+  //     title: 'Unemployment rate (%)',
+  //   },
+  // );
+  console.log('data is ', insecure);
   console.log('the us is ', us);
 
   let path = geoPath();
@@ -64,6 +84,11 @@ function myVis(us, insecure) {
   let states = (states = new Map(
     us.objects.states.geometries.map(d => [d.id, d.properties]),
   ));
+
+  console.log(
+    'tjhe topojson features thing is ',
+    topojson.feature(us, us.objects.states).features,
+  );
 
   // const svg = create('svg').attr('viewBox', [0, 0, 975, 610]);
 
@@ -77,11 +102,11 @@ function myVis(us, insecure) {
 
   svg
     .append('g')
-    .attr('fill', '#4280f4')
     .selectAll('path')
     .data(topojson.feature(us, us.objects.states).features)
     .join('path')
-    // .append('path')
+    // .attr('fill', '#4280f4')
+    .attr('fill', d => color(data[d.id]))
     .attr('d', path);
 
   svg
