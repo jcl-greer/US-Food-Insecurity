@@ -1,0 +1,4 @@
+[ZoneTransfer]
+ZoneId=3
+ReferrerUrl=https://github.com/topojson/us-atlas
+HostUrl=https://cdn.jsdelivr.net/npm/us-atlas@3/states-albers-10m.json
