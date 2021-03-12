@@ -31,8 +31,8 @@ export default function(initialData) {
     return data.reduce((acc, row) => acc.add(row[key]), new Set());
   }
 
-  const height = 700;
-  const width = 700;
+  const height = 900;
+  const width = 800;
   const margin = {top: 60, left: 60, right: 60, bottom: 60};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
@@ -91,7 +91,7 @@ export default function(initialData) {
     .filter(d => {
       return d.Year === 2012;
     })
-    .attr('r', 4)
+    .attr('r', 5)
     .attr('fill', '#1f77b4');
 
   // Try out delay on this after the circles appear
@@ -114,7 +114,7 @@ export default function(initialData) {
     .attr('x', d => 5 + xScale(d[xDim]))
     .attr('y', d => 3 + yScale(d[yDim]))
     .text(d => d[yDim])
-    .attr('font-size', '10.5px')
+    .attr('font-size', '11px')
     .attr('fill', '#1f77b4');
 
   svg
@@ -129,8 +129,8 @@ export default function(initialData) {
     .attr('class', 'circle')
     .attr('x', plotWidth / 6)
     .attr('y', plotHeight / 15)
-    .attr('width', 8)
-    .attr('height', 8)
+    .attr('width', 9)
+    .attr('height', 9)
     .attr('fill', '#1f77b4');
 
   svg
@@ -138,7 +138,7 @@ export default function(initialData) {
     .attr('x', plotWidth / 5)
     .attr('y', plotHeight / 13)
     .text('2012')
-    .style('font-size', '12px')
+    .style('font-size', '14px')
     .attr('alignment-baseline', 'middle');
 
   svg
@@ -148,7 +148,7 @@ export default function(initialData) {
     .attr('text-anchor', 'middle')
     .attr('x', plotWidth / 2)
     .attr('y', 0 - margin.top / 2)
-    .attr('font-size', 18)
+    .attr('font-size', 20)
     .text(
       'State Food Insecurity Rates in 2012 Were Still High Due to the Great Recession',
     );

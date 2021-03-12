@@ -17,8 +17,18 @@ body {
   font-family: 'Gill Sans MT'
 }
 
+#project-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
 .flex {
   display: flex;
+}
+
+#main-content {
+  display: flex;
+  justify-content: space-evenly;
 }
 
 .flex-down {
@@ -27,11 +37,12 @@ body {
 }
 
 #slide-detail {
-  width: 250px;
-  min-width: 250px;
+  width: 350px;
+  min-width: 350px;
   border-right: thin solid black;
-  height: 700px;
-  padding: 20px
+  height: 800px;
+  padding: 20px;
+  font-size: 18px;
 }
 
 /* 
@@ -47,5 +58,16 @@ body {
   display: inline-block;
   margin: 5px;
   cursor: pointer;
+}
+
+
+
+#prev {
+  min-width: 70px;
+}
+
+#next {
+  min-width: 70px;
+  margin-left: 10px;
 }
 

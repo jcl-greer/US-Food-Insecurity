@@ -28,7 +28,7 @@ json('./data/state_covid.json')
 
 const slides = [
   {
-    title: 'Example Slide the first loyal subjects it has ',
+    title: 'Food Insecurity Rates During / After the Great Recession',
     content:
       'Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
     render: data => {
@@ -37,7 +37,8 @@ const slides = [
   },
 
   {
-    title: 'Example Slide the SECOND loyal subjects it has ',
+    title:
+      'Food Insecurity Rates Have Declined From the Heights during the recession',
     content:
       'Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
     render: data => {
@@ -46,9 +47,9 @@ const slides = [
   },
 
   {
-    title: 'Example Slide the Third loyal subjects it has ',
+    title: 'But The Estimated Impact of COVID-19 Has Reversed Those Declines',
     content:
-      'Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
+      'The emergence of the COVID-19 pandemic has drastically reduced the ability of Americans to obtain essential needs like shelter and food, and it has likely exacerbated existing health disparities. While significant gains were made in reducing food insecurity in the decade following the Great Recession, these improvements have been threatened by the widespread economic and public health downturn resulting from the pandemic. Unemployment and poverty rates are two of the most significant indicators (per Feeding America), and the critical loss of income and jobs during the pandemic means that many more households are struggling to access adequate, healthy food.  Using estimated changes in unemployment and poverty adjusted based on actual rates at the start of the pandemic, Feeding America’s Map the Meal Gap study projects that food insecurity rates rose significantly across all states in 2020.  In most states, projected 2020 rates are higher than 2012 rates, which emphasizes the need to implement stronger policies at the state and federal level to combat food insecurity. ',
     render: data => {
       arrow3(data);
     },
@@ -67,7 +68,7 @@ function main(data) {
 
   // configuration stuff
 
-  const header = select('#slide-detail h1');
+  const header = select('#slide-detail h2');
   const body = select('#slide-detail p');
 
   select('#prev').on('click', () =>

@@ -46,8 +46,8 @@ export default function(initialData) {
     return data.reduce((acc, row) => acc.add(row[key]), new Set());
   }
 
-  const height = 700;
-  const width = 700;
+  const height = 900;
+  const width = 800;
   const margin = {top: 60, left: 60, right: 60, bottom: 60};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
@@ -143,10 +143,10 @@ export default function(initialData) {
     .attr('class', 'circle')
     .attr('rx', 100)
     .attr('ry', 100)
-    .attr('x', d => xScale(d[xDim]) - 4)
-    .attr('y', d => yScale(d[yDim]) - 4)
-    .attr('width', 8)
-    .attr('height', 8)
+    .attr('x', d => xScale(d[xDim]) - 5)
+    .attr('y', d => yScale(d[yDim]) - 5)
+    .attr('width', 10)
+    .attr('height', 10)
     .attr('fill', '#1f77b4');
 
   const t = transition().duration(1600);
@@ -190,7 +190,7 @@ export default function(initialData) {
       'd',
       symbol()
         .type(symbolTriangle)
-        .size(35),
+        .size(45),
     )
     .attr('fill', '#aec7e8');
 
@@ -222,8 +222,8 @@ export default function(initialData) {
     .attr('class', 'triangle')
     .attr('x', plotWidth / 15)
     .attr('y', plotHeight / 25)
-    .attr('width', 8)
-    .attr('height', 8)
+    .attr('width', 9)
+    .attr('height', 9)
     .attr('fill', '#1f77b4');
 
   svg
@@ -231,8 +231,8 @@ export default function(initialData) {
     .attr('class', 'circle')
     .attr('x', plotWidth / 15)
     .attr('y', plotHeight / 15)
-    .attr('width', 8)
-    .attr('height', 8)
+    .attr('width', 9)
+    .attr('height', 9)
     .attr('fill', '#aec7e8');
 
   svg
@@ -240,7 +240,7 @@ export default function(initialData) {
     .attr('x', plotWidth / 11)
     .attr('y', plotHeight / 12.4)
     .text('2018')
-    .style('font-size', '12px')
+    .style('font-size', '14px')
     .attr('alignment-baseline', 'middle');
 
   svg
@@ -248,7 +248,7 @@ export default function(initialData) {
     .attr('x', plotWidth / 11)
     .attr('y', plotHeight / 19)
     .text('2012')
-    .style('font-size', '12px')
+    .style('font-size', '14px')
     .attr('alignment-baseline', 'middle');
 
   svg
@@ -258,7 +258,7 @@ export default function(initialData) {
     .attr('text-anchor', 'middle')
     .attr('x', plotWidth / 2)
     .attr('y', 0 - margin.top / 2)
-    .attr('font-size', 18)
+    .attr('font-size', 20)
     .text('Insecurity Rates Dropped Among All States from 2012 to 2018');
   svg
     .append('g')

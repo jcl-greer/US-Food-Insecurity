@@ -42,8 +42,8 @@ export default function(data) {
     return data.reduce((acc, row) => acc.add(row[key]), new Set());
   }
 
-  const height = 700;
-  const width = 700;
+  const height = 900;
+  const width = 800;
   const margin = {top: 60, left: 60, right: 60, bottom: 60};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
@@ -120,8 +120,8 @@ export default function(data) {
         .append('rect')
         .attr('rx', 100)
         .attr('ry', 100)
-        .attr('x', d => xScale(d[xDim]) - 4)
-        .attr('y', d => yScale(d[yDim]) - 4)
+        .attr('x', d => xScale(d[xDim]) - 5)
+        .attr('y', d => yScale(d[yDim]) - 5)
         .attr('class', 'rect')
         .attr('opacity', d => {
           if (d.Year === 2012) {
@@ -130,8 +130,8 @@ export default function(data) {
             return 0;
           }
         })
-        .attr('width', 8)
-        .attr('height', 8)
+        .attr('width', 10)
+        .attr('height', 10)
         .call(el =>
           el
             .transition(t)
@@ -145,10 +145,10 @@ export default function(data) {
                 return 0;
               }
             })
-            .attr('x', d => xScale(d[xDim]) - 1.5)
-            .attr('y', d => yScale(d[yDim]) - 5)
-            .attr('width', 3)
-            .attr('height', 10),
+            .attr('x', d => xScale(d[xDim]) - 2)
+            .attr('y', d => yScale(d[yDim]) - 5.5)
+            .attr('width', 4)
+            .attr('height', 11),
         ),
     )
 
@@ -174,7 +174,7 @@ export default function(data) {
     .filter(d => {
       return d.Year === 2018;
     })
-    .attr('r', 4)
+    .attr('r', 5)
     .attr('fill', '#aec7e8');
 
   svg
@@ -216,7 +216,7 @@ export default function(data) {
       'd',
       symbol()
         .type(symbolTriangle)
-        .size(35),
+        .size(45),
     )
     .attr('fill', '#923124');
 
@@ -237,10 +237,10 @@ export default function(data) {
     .filter(d => {
       return d.Year === 2018;
     })
-    .attr('x', d => -23 + xScale(d[xDim]))
+    .attr('x', d => -25 + xScale(d[xDim]))
     .attr('y', d => 3 + yScale(d[yDim]))
     .text(d => d[yDim])
-    .attr('font-size', '10.5px')
+    .attr('font-size', '11px')
     .attr('fill', '#aec7e8')
     .attr('font-weight', '600');
 
@@ -256,8 +256,8 @@ export default function(data) {
     .attr('class', 'triangle')
     .attr('x', plotWidth / 6)
     .attr('y', plotHeight / 25)
-    .attr('width', 8)
-    .attr('height', 8)
+    .attr('width', 9)
+    .attr('height', 9)
     .attr('fill', '#1f77b4');
 
   svg
@@ -265,8 +265,8 @@ export default function(data) {
     .attr('class', 'circle')
     .attr('x', plotWidth / 6)
     .attr('y', plotHeight / 15)
-    .attr('width', 8)
-    .attr('height', 8)
+    .attr('width', 9)
+    .attr('height', 9)
     .attr('fill', '#aec7e8');
 
   // '#1f77b4'
@@ -275,8 +275,8 @@ export default function(data) {
     .attr('class', 'red-triangle')
     .attr('x', plotWidth / 6)
     .attr('y', plotHeight / 10.75)
-    .attr('width', 8)
-    .attr('height', 8)
+    .attr('width', 9)
+    .attr('height', 9)
     .attr('fill', '#923124');
 
   svg
@@ -284,7 +284,7 @@ export default function(data) {
     .attr('x', plotWidth / 5)
     .attr('y', plotHeight / 9.75)
     .text('2020')
-    .style('font-size', '12px')
+    .style('font-size', '14px')
     .attr('alignment-baseline', 'middle');
 
   svg
@@ -292,7 +292,7 @@ export default function(data) {
     .attr('x', plotWidth / 5)
     .attr('y', plotHeight / 13)
     .text('2018')
-    .style('font-size', '12px')
+    .style('font-size', '14px')
     .attr('alignment-baseline', 'middle');
 
   svg
@@ -300,7 +300,7 @@ export default function(data) {
     .attr('x', plotWidth / 5)
     .attr('y', plotHeight / 20)
     .text('2012')
-    .style('font-size', '12px')
+    .style('font-size', '14px')
     .attr('alignment-baseline', 'middle');
 
   svg
@@ -310,7 +310,7 @@ export default function(data) {
     .attr('text-anchor', 'middle')
     .attr('x', plotWidth / 2)
     .attr('y', 0 - margin.top / 2)
-    .attr('font-size', 18)
+    .attr('font-size', 20)
     .text(
       'Due to COVID-19, Estimated 2020 State Insecurity Rates Exceed 2012 Rates in Many States',
     );
