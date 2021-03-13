@@ -43,9 +43,9 @@ export default function(us, insecure) {
 
 function map(us, insecure) {
   console.log('starting this function', this);
-  const height = 600;
+  const height = 650;
   const width = 1000;
-  const margin = {left: 20, top: 10, bottom: 10, right: 50};
+  const margin = {left: 10, top: 10, bottom: 10, right: 50};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
   let projection = geoAlbersUsa();
@@ -87,7 +87,7 @@ function map(us, insecure) {
     .attr('height', height)
     .attr('width', width)
     .append('g')
-    .attr('viewBox', [100, 100, 900, 510])
+    .attr('viewBox', [10, 10, 900, 530])
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
   svg
@@ -105,13 +105,18 @@ function map(us, insecure) {
       select(this)
         .transition()
         .duration('50')
-        .attr('opacity', '.5');
+        .attr('opacity', '.5')
+        .attr('fill', 'black')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 2);
     })
     .on('mouseout', function(d, i) {
       select(this)
         .transition()
         .duration('50')
-        .attr('opacity', '1');
+        .attr('opacity', '1')
+        .attr('fill', d => color(data[d.id]))
+        .attr('stroke', 'white');
     });
 
   svg
@@ -196,9 +201,9 @@ function scatter(initialData) {
 
   console.log('The new data is ', data);
 
-  const height = 250;
-  const width = 400;
-  const margin = {left: 20, top: 20, bottom: 20, right: 20};
+  const height = 430;
+  const width = 475;
+  const margin = {left: 65, top: 50, bottom: 50, right: 20};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
 
@@ -229,13 +234,12 @@ function scatter(initialData) {
       '#bfdbff',
       '#9dc5fe',
       '#7daefc',
-      '#5f97f9',
+      // '#5f97f9',
       '#4280f4',
       '#2667ec',
       '#084de3',
       '#002fd6',
     ]);
-  // .range(range(9).map(function(i) { return "q" + i + "-9"; }));
 
   const svg = select('#slide-content #map-budget #budget-scatter')
     .append('svg')
@@ -273,21 +277,23 @@ function scatter(initialData) {
     )
     .attr('id', 'budget-scatter')
 
-    .attr('r', 4)
+    .attr('r', 3.5)
     .attr('fill', d => colorScale(d[colorVar]))
     .attr('stroke', 'black');
 
   svg
     .append('g')
     .attr('class', 'legendQuant')
-    .attr('font-size', '11px')
-    .attr('transform', `translate(${plotWidth - margin.right}, 10)`);
+    .attr('font-size', '10.5px')
+    .attr('transform', `translate(${plotWidth - margin.right * 4}, -10)`);
 
   let colorLegend = legendColor()
     .labelFormat(format('.1%'))
     .scale(colorScale)
+    .shapeHeight(10)
+    .shapeWidth(10)
     .title('% of Food Insecure in Areas with High Meal Costs')
-    .titleWidth(80);
+    .titleWidth(100);
 
   svg.select('.legendQuant').call(colorLegend);
 
@@ -323,19 +329,18 @@ function scatter(initialData) {
     .attr('text-anchor', 'middle')
     .attr('x', plotWidth / 2)
     .attr('y', 0 - margin.top / 2)
-    .attr('font-size', 18)
-    .text(
-      'Large States Would Need to Spend a Lot More To Remedy Food Budget Shortfalls',
-    );
+    .attr('font-size', '16px')
+    .text('Annual Food Budget Shortfalls by State');
   svg
     .append('g')
     .append('text')
-    .attr('class', 'x-axis')
+    .attr('class', 'x-label')
     .attr('text-anchor', 'middle')
     .attr('x', plotWidth / 2)
     .attr('y', plotHeight + 30)
+
     .text('Total Annual Budget Shortfall ($)')
-    .attr('font-size', 14);
+    .attr('font-size', '12px');
 
   svg
     .append('g')
@@ -344,8 +349,9 @@ function scatter(initialData) {
     .attr('transform', 'rotate(-90)')
     .attr('text-anchor', 'middle')
     .attr('x', 0 - plotHeight / 2)
-    .attr('y', -margin.left / 2)
-    .text('Annual Food Budget Shortage Per 100,000');
+    .attr('y', -margin.left / 1.15)
+    .text('Food Budget Shortage Per 100,000')
+    .attr('font-size', '12px');
 }
 
 function prepData(data) {
@@ -434,9 +440,9 @@ function stackedBar(initialData) {
     .attr('x', plotWidth / 2)
     .attr('y', 40)
     .attr('font-size', 20)
-    .text(
-      'Due to COVID-19, Estimated 2020 State Insecurity Rates Exceed 2012 Rates in Many States',
-    );
+    .text
+    // 'Due to COVID-19, Estimated 2020 State Insecurity Rates Exceed 2012 Rates in Many States',
+    ();
 
   // svg
   //   .append('g')

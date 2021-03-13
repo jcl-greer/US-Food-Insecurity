@@ -149,7 +149,7 @@ export default function(initialData) {
     .attr('text-anchor', 'middle')
     .attr('x', plotWidth / 2)
     .attr('y', 0 - margin.top / 2)
-    .attr('font-size', 20)
+    .attr('font-size', '18px')
     .text(
       'State Food Insecurity Rates in 2012 Were Still High Due to the Great Recession',
     );
@@ -161,5 +161,5 @@ export default function(initialData) {
     .attr('x', plotWidth / 2)
     .attr('y', plotHeight + 30)
     .text('Food Insecurity Rate')
-    .attr('font-size', 14);
+    .attr('font-size', '14px');
 }

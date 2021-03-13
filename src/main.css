@@ -41,13 +41,14 @@ body {
   min-width: 300px;
   border-right: thin solid black;
   height: 800px;
-  padding: 20px;
+  padding: 10px;
   font-size: 18px;
 }
 
  
 #slide-content {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -57,7 +58,9 @@ body {
 
 #map-budget {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
+  justify-content: center;
 
 }
 
@@ -74,11 +77,11 @@ body {
 
 
 #prev {
-  min-width: 70px;
+  min-width: 50px;
 }
 
 #next {
-  min-width: 70px;
+  min-width: 50px;
   margin-left: 10px;
 }
 

@@ -311,7 +311,7 @@ export default function(data) {
     .attr('text-anchor', 'middle')
     .attr('x', plotWidth / 2)
     .attr('y', 0 - margin.top / 2)
-    .attr('font-size', 20)
+    .attr('font-size', 18)
     .text(
       'Due to COVID-19, Estimated 2020 State Insecurity Rates Exceed 2012 Rates in Many States',
     );

@@ -65,7 +65,7 @@ const slides = [
     },
   },
   {
-    title: 'Exploring Food Insecurity From 2012 - 2018',
+    title: 'Explore the Map!',
     content:
       'Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
     render: data => {
