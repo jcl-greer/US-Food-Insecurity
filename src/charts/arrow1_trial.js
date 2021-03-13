@@ -1,4 +1,4 @@
-import {select} from 'd3-selection';
+import {select, selectAll} from 'd3-selection';
 import {csv, json} from 'd3-fetch';
 import {scaleLinear, scaleTime, scaleBand} from 'd3-scale';
 import {extent, min, max} from 'd3-array';
@@ -24,6 +24,7 @@ import {ease, easeCubicIn, easeBounceOut, easeBackInOut} from 'd3-ease';
 export default function(initialData) {
   if (!select('svg').empty()) {
     select('svg').remove();
+    selectAll('svg').remove();
   }
   let data = initialData.filter(({Year}) => 2012 && Year <= 2018);
 

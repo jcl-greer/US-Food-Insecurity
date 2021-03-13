@@ -17,11 +17,21 @@ import './main.css';
 import arrow1 from './charts/arrow1_trial';
 import arrow2 from './charts/arrow2_trial';
 import arrow3 from './charts/arrow3_trial';
+import dash from './charts/dashboard';
 
-// added a comment
+// // added a comment
 
-json('./data/state_covid.json')
-  .then(main)
+Promise.all([
+  json('./data/states-albers-10m.json'),
+  json('./data/final_state_insecurity.json'),
+  json('./data/state_covid.json'),
+])
+  .then(results => {
+    const [geo, insecure, covid] = results;
+
+    console.log('The results are ', geo, insecure);
+    main(geo, insecure, covid);
+  })
   .catch(e => {
     console.log(e);
   });
@@ -54,11 +64,30 @@ const slides = [
       arrow3(data);
     },
   },
+  {
+    title:
+      'Food Insecurity Rates Have Declined From the Heights during the recession',
+    content:
+      'Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
+    render: data => {
+      console.log('THE NEW DATA IS ', data);
+      dash(data[0], data[1]);
+    },
+  },
 ];
 
-function main(data) {
+function main(geo, insecure, covid) {
   // state
-  console.log('The data is ', data);
+
+  let slideData = new Object();
+
+  slideData[0] = covid;
+  slideData[1] = covid;
+  slideData[2] = covid;
+  slideData[3] = [geo, insecure];
+
+  console.log('The data is ', covid);
+
   let currentSlideIdx = 0;
   const updateState = newIdx => {
     currentSlideIdx = newIdx;
@@ -92,10 +121,11 @@ function main(data) {
 
   // draw loop
   function renderSlide() {
+    console.log('the current slide idx is ', currentSlideIdx);
     const currentSlide = slides[currentSlideIdx];
     header.text(currentSlide.title);
     body.text(currentSlide.content);
-    currentSlide.render(data);
+    currentSlide.render(slideData[currentSlideIdx]);
   }
   renderSlide();
   drawProgress();
