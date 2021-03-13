@@ -101,7 +101,7 @@ function map(us, insecure) {
     .attr('fill', d => color(data[d.id]))
     .attr('d', path)
     .on('mouseover', function(d, i) {
-      console.log('this is ', this);
+      // console.log('this is ', this);
       select(this)
         .transition()
         .duration('50')
@@ -165,7 +165,7 @@ function map(us, insecure) {
   };
 
   const tooltip = svg.append('g');
-  console.log('this is ', this);
+  // console.log('this is ', this);
   svg
     .selectAll('.state')
     .on('touchmove mousemove', function(event, d) {

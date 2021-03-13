@@ -65,8 +65,7 @@ const slides = [
     },
   },
   {
-    title:
-      'Food Insecurity Rates Have Declined From the Heights during the recession',
+    title: 'Exploring Food Insecurity From 2012 - 2018',
     content:
       'Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
     render: data => {
