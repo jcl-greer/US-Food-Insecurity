@@ -32,16 +32,28 @@ import {legendColor} from 'd3-svg-legend';
 //   });
 
 export default function(us, insecure) {
-  console.log('MADE IT TO THIS COOL FUNCTION', us, insecure);
+  console.log('MADE IT TO THIS COOL FUNCTION', insecure);
   if (!select('svg').empty()) {
     select('svg').remove();
   }
-  map(us, insecure);
-  scatter(insecure);
-  stackedBar(insecure);
+
+  // possible metrics
+  // Child Food Insecurity Rate
+  // Food Insecurity Rate
+  // # of Food Insecure Children
+  // # of Food Insecure Persons
+
+  const dashState = {
+    selectedYear: 2018,
+    child: false,
+  };
+
+  map(us, insecure, dashState.selectedYear, dashState.child);
+  scatter(insecure, dashState.selectedYear);
+  stackedBar(insecure, dashState.selectedYear, dashState.child);
 }
 
-function map(us, insecure) {
+function map(us, insecure, selectedYear, child) {
   console.log('starting this function', this);
   const height = 650;
   const width = 1000;
@@ -195,7 +207,7 @@ function map(us, insecure) {
     });
 }
 
-function scatter(initialData) {
+function scatter(initialData, selectedYear) {
   console.log('the data is ', initialData);
   let data = initialData.filter(d => d.Year === 2018);
 
@@ -354,7 +366,7 @@ function scatter(initialData) {
     .attr('font-size', '12px');
 }
 
-function prepData(data) {
+function prepStackData(data) {
   let fullArr = [];
   for (let i = 0; i < data.length; i++) {
     let obj = data[i];
@@ -365,11 +377,13 @@ function prepData(data) {
   return fullArr;
 }
 
-function stackedBar(initialData) {
+function stackedBar(initialData, selectedYear, child) {
   console.log('the data is ', initialData);
   let yearData = initialData.filter(d => d.Year === 2018);
   const xDim = '# of Food Insecure Persons';
-  let data = prepData(yearData.sort((a, b) => (a[xDim] > b[xDim] ? 1 : -1)));
+  let data = prepStackData(
+    yearData.sort((a, b) => (a[xDim] > b[xDim] ? 1 : -1)),
+  );
 
   console.log('the new data is ', data);
   const height = 300;
