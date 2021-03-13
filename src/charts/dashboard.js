@@ -50,10 +50,10 @@ function yearDropdown(insecure, onChange) {
   }
 
   // dropdown
-  const dropDown = select('#filters #year-dropdown')
-    .selectAll('.options')
+  const dropDown = select('#year-dropdown')
+    .selectAll('.option')
     .data(['2013', '2014', '2015', '2016', '2017', '2018'])
-    .join()
+    .enter()
     .append('option')
     .text(d => d)
     .attr('value', d => convertYear(d));
