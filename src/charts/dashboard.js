@@ -87,7 +87,7 @@ function map(us, insecure) {
     .attr('height', height)
     .attr('width', width)
     .append('g')
-    .attr('viewBox', [0, 0, 975, 610])
+    .attr('viewBox', [0, 0, 1100, 710])
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
   svg
@@ -384,6 +384,7 @@ function stackedBar(initialData) {
   }
 
   let stackData = stack(data);
+  const t1 = transition().duration(600);
 
   const xScale = scaleLinear()
     .domain([0, 1])
@@ -403,7 +404,20 @@ function stackedBar(initialData) {
   svg
     .selectAll('.rect')
     .data(stackData)
-    .join('rect')
+    .join(enter =>
+      enter
+        .append('rect')
+
+        // .attr('cy', d => yScale(d[yDim]))
+        // .attr('cx', d => xScale(d[xDim]))
+        .attr('opacity', 0)
+        .call(el =>
+          el
+            .transition(t1)
+            .delay((d, i) => i * 20)
+            .attr('opacity', 1),
+        ),
+    )
     .attr('id', 'stacked-bar')
     .attr('x', d => xScale(d.startValue))
     .attr('y', plotHeight / 5)
@@ -411,6 +425,18 @@ function stackedBar(initialData) {
     .attr('height', plotHeight / 6)
     .attr('fill', 'steelblue')
     .attr('stroke', 'white');
+
+  svg
+    .append('g')
+    .append('text')
+    .attr('class', 'title')
+    .attr('text-anchor', 'middle')
+    .attr('x', plotWidth / 2)
+    .attr('y', 40)
+    .attr('font-size', 20)
+    .text(
+      'Due to COVID-19, Estimated 2020 State Insecurity Rates Exceed 2012 Rates in Many States',
+    );
 
   // svg
   //   .append('g')
