@@ -43,9 +43,9 @@ export default function(us, insecure) {
 
 function map(us, insecure) {
   console.log('starting this function', this);
-  const height = 700;
-  const width = 1200;
-  const margin = {left: 100, top: 50, bottom: 50, right: 50};
+  const height = 600;
+  const width = 1000;
+  const margin = {left: 20, top: 10, bottom: 10, right: 50};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
   let projection = geoAlbersUsa();
@@ -87,7 +87,7 @@ function map(us, insecure) {
     .attr('height', height)
     .attr('width', width)
     .append('g')
-    .attr('viewBox', [0, 0, 1100, 710])
+    .attr('viewBox', [100, 100, 900, 510])
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
   svg
@@ -196,9 +196,9 @@ function scatter(initialData) {
 
   console.log('The new data is ', data);
 
-  const height = 500;
-  const width = 700;
-  const margin = {left: 100, top: 50, bottom: 50, right: 50};
+  const height = 250;
+  const width = 400;
+  const margin = {left: 20, top: 20, bottom: 20, right: 20};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
 
@@ -273,7 +273,7 @@ function scatter(initialData) {
     )
     .attr('id', 'budget-scatter')
 
-    .attr('r', 5)
+    .attr('r', 4)
     .attr('fill', d => colorScale(d[colorVar]))
     .attr('stroke', 'black');
 
@@ -287,7 +287,7 @@ function scatter(initialData) {
     .labelFormat(format('.1%'))
     .scale(colorScale)
     .title('% of Food Insecure in Areas with High Meal Costs')
-    .titleWidth(100);
+    .titleWidth(80);
 
   svg.select('.legendQuant').call(colorLegend);
 

@@ -37,8 +37,8 @@ body {
 }
 
 #slide-detail {
-  width: 350px;
-  min-width: 350px;
+  width: 300px;
+  min-width: 300px;
   border-right: thin solid black;
   height: 800px;
   padding: 20px;

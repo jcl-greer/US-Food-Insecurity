@@ -47,8 +47,8 @@ export default function(initialData) {
     return data.reduce((acc, row) => acc.add(row[key]), new Set());
   }
 
-  const height = 900;
-  const width = 800;
+  const height = 800;
+  const width = 700;
   const margin = {top: 60, left: 60, right: 60, bottom: 60};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
