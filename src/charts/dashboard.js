@@ -31,6 +31,36 @@ import {legendColor} from 'd3-svg-legend';
 //     console.log('the error is ', e);
 //   });
 
+function yearDropdown(insecure, onChange) {
+  // convert dropdown keys to values
+  function convertYear(d) {
+    return d === '2013'
+      ? 2013
+      : d === '2014'
+      ? 2014
+      : d === '2015'
+      ? 2015
+      : d === '2016'
+      ? 2016
+      : d === '2017'
+      ? 2017
+      : d === '2018'
+      ? 2018
+      : none;
+  }
+
+  // dropdown
+  const dropDown = select('#filters #year-dropdown')
+    .selectAll('.options')
+    .data(['2013', '2014', '2015', '2016', '2017', '2018'])
+    .join()
+    .append('option')
+    .text(d => d)
+    .attr('value', d => convertYear(d));
+
+  dropDown.select('#year-dropdown').on('change', onChange);
+}
+
 export default function(us, insecure) {
   console.log('MADE IT TO THIS COOL FUNCTION', insecure);
   if (!select('svg').empty()) {
@@ -48,13 +78,43 @@ export default function(us, insecure) {
     child: false,
   };
 
+  // function yearFilter(us, insecure) {
+  //   d3.select('#map')
+  //     .selectAll('*')
+  //     .remove();
+  //   d3.select('#hist')
+  //     .selectAll('*')
+  //     .remove();
+  //   state.selectedYear = this.value;
+  //   console.log('This is ! ', this.value);
+  // }
+
   map(us, insecure, dashState.selectedYear, dashState.child);
   scatter(insecure, dashState.selectedYear);
   stackedBar(insecure, dashState.selectedYear, dashState.child);
+
+  yearDropdown(insecure, function(d) {
+    select('#map')
+      .selectAll('*')
+      .remove();
+    // select('#budget-scatter')
+    //   .selectAll('*')
+    //   .remove();
+    state.selectedYear = this.value;
+    myMap(us, insecure, state.selectedYear, state.child);
+    // myHist(
+    //   caSchools,
+    //   state.yearFilter,
+    //   state.maxCoverage,
+    //   state.minEnrollment,
+    //   state.schoolType,
+    //   state.marker,
+    // );
+  });
 }
 
 function map(us, insecure, selectedYear, child) {
-  console.log('starting this function', this);
+  console.log('starting this function', this, selectedYear);
   const height = 650;
   const width = 1000;
   const margin = {left: 10, top: 10, bottom: 10, right: 50};

@@ -40,7 +40,7 @@ const slides = [
   {
     title: 'Food Insecurity Rates During / After the Great Recession',
     content:
-      'Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
+      'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.',
     render: data => {
       arrow1(data);
     },
@@ -50,7 +50,7 @@ const slides = [
     title:
       'Food Insecurity Rates Have Declined From the Heights during the recession',
     content:
-      'Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
+      'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.',
     render: data => {
       arrow2(data);
     },
@@ -99,6 +99,8 @@ function main(geo, insecure, covid) {
   const header = select('#slide-detail h2');
   const body = select('#slide-detail p');
   const detail = select('#slide-detail');
+  const dropdown1 = select('#slide-content #filters #year-dropdown');
+  const dropdown2 = select('#slide-content #filters #metric-dropdown');
 
   select('#prev').on('click', () =>
     updateState(currentSlideIdx ? currentSlideIdx - 1 : slides.length - 1),
@@ -128,9 +130,13 @@ function main(geo, insecure, covid) {
     if (currentSlideIdx === 3) {
       detail.style('min-width', '150px');
       detail.style('width', '150px');
+      dropdown1.style('display', 'inline');
+      dropdown2.style('display', 'inline');
     } else {
       detail.style('min-width', '350px');
       detail.style('width', '350px');
+      dropdown1.style('display', 'none');
+      dropdown2.style('display', 'none');
     }
 
     currentSlide.render(slideData[currentSlideIdx]);
