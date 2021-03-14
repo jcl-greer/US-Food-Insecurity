@@ -50,13 +50,13 @@ function yearDropdown(insecure, onChange) {
   }
 
   // dropdown
-  const dropDown = select('#year-dropdown')
-    .selectAll('.option')
-    .data(['2013', '2014', '2015', '2016', '2017', '2018'])
-    .enter()
-    .append('option')
-    .text(d => d)
-    .attr('value', d => convertYear(d));
+  // const dropDown = select('#year-dropdown')
+  //   .selectAll('.option')
+  //   .data(['2013', '2014', '2015', '2016', '2017', '2018'])
+  //   .enter()
+  //   .append('option')
+  //   .text(d => d)
+  //   .attr('value', d => convertYear(d));
 
   dropDown.select('#year-dropdown').on('change', onChange);
 }
@@ -78,6 +78,14 @@ export default function(us, insecure) {
     child: false,
   };
 
+  // const dropDown = select('#year-dropdown')
+  //   .selectAll('.option')
+  //   .data(['2013', '2014', '2015', '2016', '2017', '2018'])
+  //   .enter()
+  //   .append('option')
+  //   .text(d => d)
+  //   .attr('value', d => convertYear(d));
+
   // function yearFilter(us, insecure) {
   //   d3.select('#map')
   //     .selectAll('*')
@@ -93,24 +101,24 @@ export default function(us, insecure) {
   scatter(insecure, dashState.selectedYear);
   stackedBar(insecure, dashState.selectedYear, dashState.child);
 
-  yearDropdown(insecure, function(d) {
-    select('#map')
-      .selectAll('*')
-      .remove();
-    // select('#budget-scatter')
-    //   .selectAll('*')
-    //   .remove();
-    state.selectedYear = this.value;
-    myMap(us, insecure, state.selectedYear, state.child);
-    // myHist(
-    //   caSchools,
-    //   state.yearFilter,
-    //   state.maxCoverage,
-    //   state.minEnrollment,
-    //   state.schoolType,
-    //   state.marker,
-    // );
-  });
+  // yearDropdown(insecure, function(d) {
+  //   select('#map')
+  //     .selectAll('*')
+  //     .remove();
+  //   // select('#budget-scatter')
+  //   //   .selectAll('*')
+  //   //   .remove();
+  //   state.selectedYear = this.value;
+  //   myMap(us, insecure, state.selectedYear, state.child);
+  //   // myHist(
+  //   //   caSchools,
+  //   //   state.yearFilter,
+  //   //   state.maxCoverage,
+  //   //   state.minEnrollment,
+  //   //   state.schoolType,
+  //   //   state.marker,
+  //   // );
+  // });
 }
 
 function map(us, insecure, selectedYear, child) {
@@ -173,7 +181,7 @@ function map(us, insecure, selectedYear, child) {
     .attr('fill', d => color(data[d.id]))
     .attr('d', path)
     .on('mouseover', function(d, i) {
-      // console.log('this is ', this);
+      console.log('this is ', this, d, i);
       select(this)
         .transition()
         .duration('50')
@@ -181,6 +189,14 @@ function map(us, insecure, selectedYear, child) {
         .attr('fill', 'black')
         .attr('stroke', 'black')
         .attr('stroke-width', 2);
+      select('#budget-scatter')
+        .selectAll('*')
+        .remove();
+      scatter(insecure, 2018, i['id']);
+      select('#stacked-bar')
+        .selectAll('*')
+        .remove();
+      stackedBar(insecure, 2018, false, i['id']);
     })
     .on('mouseout', function(d, i) {
       select(this)
@@ -189,6 +205,15 @@ function map(us, insecure, selectedYear, child) {
         .attr('opacity', '1')
         .attr('fill', d => color(data[d.id]))
         .attr('stroke', 'white');
+      select('#budget-scatter')
+        .selectAll('*')
+        .remove();
+      scatter(insecure, 2018);
+      select('#stacked-bar')
+        .selectAll('*')
+        .remove();
+
+      stackedBar(insecure, 2018, false);
     });
 
   svg
@@ -267,11 +292,11 @@ function map(us, insecure, selectedYear, child) {
     });
 }
 
-function scatter(initialData, selectedYear) {
+function scatter(initialData, selectedYear, marker = null) {
   console.log('the data is ', initialData);
   let data = initialData.filter(d => d.Year === 2018);
 
-  console.log('The new data is ', data);
+  // console.log('The new data is ', data);
 
   const height = 430;
   const width = 475;
@@ -313,6 +338,16 @@ function scatter(initialData, selectedYear) {
       '#002fd6',
     ]);
 
+  function columnHas(data, col, allowedValues) {
+    const rows = [];
+    for (let i = 0; i < data.length; i += 1) {
+      if (allowedValues.includes(data[i][col])) {
+        rows.push(data[i]);
+      }
+    }
+    return rows;
+  }
+
   const svg = select('#slide-content #map-budget #budget-scatter')
     .append('svg')
     .attr('height', height)
@@ -320,38 +355,61 @@ function scatter(initialData, selectedYear) {
     .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-  // svg
-  //   .selectAll('.budget-scatter')
-  //   .data(data)
-  //   .join('circle')
-  //   .attr('class', 'budget-scatter')
-  //   .attr('cx', d => xScale(d[xDim]))
-  //   .attr('cy', d => yScale(d[yDim]))
-  //   .attr('r', 5)
-  //   .attr('fill', d => colorScale(d[colorVar]))
-  //   .attr('stroke', 'black');
-  const t = transition().duration(1500);
   svg
-    .selectAll('#budget-scatter')
+    .selectAll('.budget-scatter')
     .data(data)
-    .join(enter =>
-      enter
-        .append('circle')
-        .attr('cy', d => yScale(d[yDim]) * 0)
-        .attr('cx', d => xScale(d[xDim]) * 2.5)
-        .call(el =>
-          el
-            .transition(t)
-            .ease(easeBackInOut.overshoot(1.5))
-            .attr('cy', d => yScale(d[yDim]))
-            .attr('cx', d => xScale(d[xDim])),
-        ),
-    )
-    .attr('id', 'budget-scatter')
-
-    .attr('r', 3.5)
+    .join('circle')
+    .attr('class', 'budget-scatter')
+    .attr('cx', d => xScale(d[xDim]))
+    .attr('cy', d => yScale(d[yDim]))
+    .attr('r', 5)
     .attr('fill', d => colorScale(d[colorVar]))
     .attr('stroke', 'black');
+  const t = transition().duration(1500);
+  // svg
+  //   .selectAll('#budget-scatter')
+  //   .data(data)
+  //   .join(enter =>
+  //     enter
+  //       .append('circle')
+  //       .attr('cy', d => yScale(d[yDim]) * 0)
+  //       .attr('cx', d => xScale(d[xDim]) * 2.5)
+  //       .call(el =>
+  //         el
+  //           .transition(t)
+  //           .ease(easeBackInOut.overshoot(1.5))
+  //           .attr('cy', d => yScale(d[yDim]))
+  //           .attr('cx', d => xScale(d[xDim])),
+  //       ),
+  //   )
+  //   .attr('id', 'budget-scatter')
+
+  //   .attr('r', 3.5)
+  //   .attr('fill', d => colorScale(d[colorVar]))
+  //   .attr('stroke', 'black');
+
+  if (marker !== null) {
+    console.log('THE MARKER IS ', [marker]);
+    let selectedState = columnHas(data, 'id', marker);
+    console.log(
+      'the selected STate is ',
+      selectedState,
+      selectedState[0][yDim],
+      selectedState[0][xDim],
+    );
+    svg
+      .append('g')
+      .append('circle')
+      .attr('cy', yScale(selectedState[0][yDim]))
+      .attr('cx', xScale(selectedState[0][xDim]))
+      .attr('fill', '#fba55c')
+      .attr('stroke', 'black')
+      .attr('stroke-width', '1px')
+      .attr('id', 'budget-scatter')
+      .attr('r', 4.5);
+  } else {
+    console.log('NOOOOOOOOOO MARKER');
+  }
 
   svg
     .append('g')
@@ -430,20 +488,34 @@ function prepStackData(data) {
   let fullArr = [];
   for (let i = 0; i < data.length; i++) {
     let obj = data[i];
-    let newObj = {state: obj.State, value: obj['# of Food Insecure Persons']};
+    let newObj = {
+      state: obj.State,
+      id: obj.id,
+      value: obj['# of Food Insecure Persons'],
+    };
     // console.log('The New Object is ', newObj);
     fullArr.push(newObj);
   }
   return fullArr;
 }
 
-function stackedBar(initialData, selectedYear, child) {
+function stackedBar(initialData, selectedYear, child, marker = null) {
   console.log('the data is ', initialData);
   let yearData = initialData.filter(d => d.Year === 2018);
   const xDim = '# of Food Insecure Persons';
   let data = prepStackData(
     yearData.sort((a, b) => (a[xDim] > b[xDim] ? 1 : -1)),
   );
+
+  function columnHas(data, col, allowedValues) {
+    const rows = [];
+    for (let i = 0; i < data.length; i += 1) {
+      if (allowedValues.includes(data[i][col])) {
+        rows.push(data[i]);
+      }
+    }
+    return rows;
+  }
 
   console.log('the new data is ', data);
   const height = 300;
@@ -457,6 +529,7 @@ function stackedBar(initialData, selectedYear, child) {
     let value = 0;
     return data.map(d => ({
       state: d.state,
+      id: d.id,
       value: d.value / total,
       startValue: value / total,
       endValue: (value += d.value) / total,
@@ -464,6 +537,7 @@ function stackedBar(initialData, selectedYear, child) {
   }
 
   let stackData = stack(data);
+  console.log('The stack data is ', stackData);
   const t1 = transition().duration(600);
 
   const xScale = scaleLinear()
@@ -481,23 +555,33 @@ function stackedBar(initialData, selectedYear, child) {
     .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
+  // what to change this to update only
+  // svg
+  //   .selectAll('.rect')
+  //   .data(stackData)
+  //   .join(enter =>
+  //     enter
+  //       .append('rect')
+  //       .attr('opacity', 0)
+  //       .call(el =>
+  //         el
+  //           .transition(t1)
+  //           .delay((d, i) => i * 20)
+  //           .attr('opacity', 1),
+  //       ),
+  //   )
+  //   .attr('id', 'stacked-bar')
+  //   .attr('x', d => xScale(d.startValue))
+  //   .attr('y', plotHeight / 5)
+  //   .attr('width', d => xScale(d.endValue) - xScale(d.startValue))
+  //   .attr('height', plotHeight / 6)
+  //   .attr('fill', 'steelblue')
+  //   .attr('stroke', 'white');
+
   svg
     .selectAll('.rect')
     .data(stackData)
-    .join(enter =>
-      enter
-        .append('rect')
-
-        // .attr('cy', d => yScale(d[yDim]))
-        // .attr('cx', d => xScale(d[xDim]))
-        .attr('opacity', 0)
-        .call(el =>
-          el
-            .transition(t1)
-            .delay((d, i) => i * 20)
-            .attr('opacity', 1),
-        ),
-    )
+    .join('rect')
     .attr('id', 'stacked-bar')
     .attr('x', d => xScale(d.startValue))
     .attr('y', plotHeight / 5)
@@ -505,6 +589,25 @@ function stackedBar(initialData, selectedYear, child) {
     .attr('height', plotHeight / 6)
     .attr('fill', 'steelblue')
     .attr('stroke', 'white');
+
+  if (marker !== null) {
+    console.log('THE MARKER IS ', [marker]);
+    let selectedState = columnHas(stackData, 'id', marker);
+    console.log('the selected STate is ', selectedState);
+
+    svg
+      .append('g')
+      .append('rect')
+      .attr('x', xScale(selectedState[0].startValue))
+      .attr('y', plotHeight / 5)
+      .attr(
+        'width',
+        xScale(selectedState[0].endValue) - xScale(selectedState[0].startValue),
+      )
+      .attr('height', plotHeight / 6)
+      .attr('fill', '#fba55c')
+      .attr('stroke', 'black');
+  }
 
   svg
     .append('g')
