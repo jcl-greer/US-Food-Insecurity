@@ -125,13 +125,11 @@ function map(us, insecure, selectedYear, child) {
   console.log('starting this function', this, selectedYear);
   const height = 650;
   const width = 1000;
-  const margin = {left: 10, top: 10, bottom: 10, right: 50};
+  const margin = {left: 10, top: 10, bottom: 10, right: 20};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
   let projection = geoAlbersUsa();
 
-  // const xDim = 'Weighted Annual Food Budget Shortfall';
-  // const yDim = 'Annual Food Budget Shortfall Per 100000';
   const colorDim = 'Food Insecurity Rate';
 
   insecure = insecure.filter(d => d.Year === 2018);
@@ -290,6 +288,8 @@ function map(us, insecure, selectedYear, child) {
         .attr('stroke', null)
         .lower();
     });
+
+  select('svg').attr('transform', 'scale(.75)');
 }
 
 function scatter(initialData, selectedYear, marker = null) {
@@ -298,8 +298,8 @@ function scatter(initialData, selectedYear, marker = null) {
 
   // console.log('The new data is ', data);
 
-  const height = 430;
-  const width = 475;
+  const height = 350;
+  const width = 425;
   const margin = {left: 65, top: 50, bottom: 50, right: 20};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
@@ -427,18 +427,18 @@ function scatter(initialData, selectedYear, marker = null) {
 
   svg.select('.legendQuant').call(colorLegend);
 
-  svg
-    .append('g')
-    .selectAll('.text')
-    .data(data)
-    .join('text')
-    .attr('class', 'text')
+  // svg
+  //   .append('g')
+  //   .selectAll('.text')
+  //   .data(data)
+  //   .join('text')
+  //   .attr('class', 'text')
 
-    .attr('x', d => 5 + xScale(d[xDim]))
-    .attr('y', d => 3 + yScale(d[yDim]))
-    .text(d => d['State'])
-    .attr('font-size', '10px')
-    .attr('fill', 'black');
+  //   .attr('x', d => 5 + xScale(d[xDim]))
+  //   .attr('y', d => 3 + yScale(d[yDim]))
+  //   .text(d => d['State'])
+  //   .attr('font-size', '10px')
+  //   .attr('fill', 'black');
 
   svg
     .append('g')
@@ -606,7 +606,8 @@ function stackedBar(initialData, selectedYear, child, marker = null) {
       )
       .attr('height', plotHeight / 6)
       .attr('fill', '#fba55c')
-      .attr('stroke', 'black');
+      .attr('stroke', 'black')
+      .attr('stroke-width', '2px');
   }
 
   svg
