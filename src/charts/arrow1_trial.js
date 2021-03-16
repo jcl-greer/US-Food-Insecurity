@@ -92,10 +92,10 @@ export default function(initialData) {
     .filter(d => {
       return d.Year === 2012;
     })
-    .attr('x', d => 5 + xScale(d[xDim]))
-    .attr('y', d => 3 + yScale(d[yDim]))
+    .attr('x', d => 8 + xScale(d[xDim]))
+    .attr('y', d => 4 + yScale(d[yDim]))
     .text(d => d[yDim])
-    .attr('font-size', '11px')
+    .attr('font-size', '10.5px')
     .attr('fill', '#1f77b4');
 
   svg

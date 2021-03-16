@@ -47,9 +47,9 @@ export default function(initialData) {
     return data.reduce((acc, row) => acc.add(row[key]), new Set());
   }
 
-  const height = 800;
-  const width = 700;
-  const margin = {top: 60, left: 60, right: 60, bottom: 60};
+  const height = 600;
+  const width = 550;
+  const margin = {top: 40, left: 40, right: 40, bottom: 40};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
 
@@ -146,8 +146,8 @@ export default function(initialData) {
     .attr('ry', 100)
     .attr('x', d => xScale(d[xDim]) - 5)
     .attr('y', d => yScale(d[yDim]) - 5)
-    .attr('width', 10)
-    .attr('height', 10)
+    .attr('width', 9)
+    .attr('height', 9)
     .attr('fill', '#1f77b4');
 
   const t = transition().duration(1600);
@@ -191,7 +191,7 @@ export default function(initialData) {
       'd',
       symbol()
         .type(symbolTriangle)
-        .size(45),
+        .size(35),
     )
     .attr('fill', '#aec7e8');
 
@@ -205,8 +205,8 @@ export default function(initialData) {
     .filter(d => {
       return d.Year === 2012;
     })
-    .attr('x', d => 5 + xScale(d[xDim]))
-    .attr('y', d => 3 + yScale(d[yDim]))
+    .attr('x', d => 8 + xScale(d[xDim]))
+    .attr('y', d => 4 + yScale(d[yDim]))
     .text(d => d[yDim])
     .attr('font-size', '10.5px')
     .attr('fill', '#1f77b4');

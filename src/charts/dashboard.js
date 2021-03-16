@@ -330,10 +330,10 @@ function scatter(initialData, selectedYear, marker = null) {
     .range([
       '#bfdbff',
       '#9dc5fe',
-      '#7daefc',
-      // '#5f97f9',
+      // '#7daefc',
+      '#5f97f9',
       '#4280f4',
-      '#2667ec',
+      // '#2667ec',
       '#084de3',
       '#002fd6',
     ]);
@@ -423,7 +423,7 @@ function scatter(initialData, selectedYear, marker = null) {
     .shapeHeight(10)
     .shapeWidth(10)
     .title('% of Food Insecure in Areas with High Meal Costs')
-    .titleWidth(100);
+    .titleWidth(110);
 
   svg.select('.legendQuant').call(colorLegend);
 

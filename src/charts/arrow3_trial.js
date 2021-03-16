@@ -9,18 +9,12 @@ import {transition, easeLinear} from 'd3-transition';
 // very helpful resource on transitions
 // https://observablehq.com/@d3/selection-join
 
-// json('./data/state_covid.json')
-//   .then(data => arrow3(data))
-//   .catch(e => {
-//     console.log(e);
-//   });
-
 export default function(data) {
   if (!select('svg').empty()) {
     selectAll('svg').remove();
     select('svg').remove();
   }
-  // my bad iterative function
+  // create data structure for lines
   function prepData(data) {
     const len = data.length;
     let fullArr = [];
@@ -43,9 +37,9 @@ export default function(data) {
     return data.reduce((acc, row) => acc.add(row[key]), new Set());
   }
 
-  const height = 800;
-  const width = 700;
-  const margin = {top: 60, left: 60, right: 60, bottom: 60};
+  const height = 600;
+  const width = 550;
+  const margin = {top: 40, left: 40, right: 40, bottom: 40};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
 
@@ -131,8 +125,8 @@ export default function(data) {
             return 0;
           }
         })
-        .attr('width', 10)
-        .attr('height', 10)
+        .attr('width', 9)
+        .attr('height', 9)
         .call(el =>
           el
             .transition(t)
@@ -146,10 +140,10 @@ export default function(data) {
                 return 0;
               }
             })
-            .attr('x', d => xScale(d[xDim]) - 2)
-            .attr('y', d => yScale(d[yDim]) - 5.5)
-            .attr('width', 4)
-            .attr('height', 11),
+            .attr('x', d => xScale(d[xDim]) - 1.5)
+            .attr('y', d => yScale(d[yDim]) - 4.5)
+            .attr('width', 3)
+            .attr('height', 9),
         ),
     )
 
@@ -175,7 +169,7 @@ export default function(data) {
     .filter(d => {
       return d.Year === 2018;
     })
-    .attr('r', 5)
+    .attr('r', 4.5)
     .attr('fill', '#aec7e8');
 
   svg
@@ -217,7 +211,7 @@ export default function(data) {
       'd',
       symbol()
         .type(symbolTriangle)
-        .size(45),
+        .size(35),
     )
     .attr('fill', '#923124');
 
@@ -311,9 +305,9 @@ export default function(data) {
     .attr('text-anchor', 'middle')
     .attr('x', plotWidth / 2)
     .attr('y', 0 - margin.top / 2)
-    .attr('font-size', 18)
+    .attr('font-size', 17)
     .text(
-      'Due to COVID-19, Estimated 2020 State Insecurity Rates Exceed 2012 Rates in Many States',
+      'Estimated 2020 Food Insecurity Rates Exceed 2012 Rates in Many States',
     );
   svg
     .append('g')
