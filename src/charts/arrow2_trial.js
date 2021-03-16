@@ -164,7 +164,6 @@ export default function(initialData) {
     )
     .attr('fill', '#aec7e8');
 
-  // huh huh huh
   svg
     .append('g')
     .selectAll('.text')

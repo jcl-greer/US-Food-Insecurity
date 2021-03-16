@@ -1,5 +1,4 @@
 import {select, selectAll} from 'd3-selection';
-import {csv, json} from 'd3-fetch';
 import {scaleLinear, scaleTime, scaleBand} from 'd3-scale';
 import {extent, min, max} from 'd3-array';
 import {axisBottom, axisLeft} from 'd3-axis';
@@ -48,8 +47,6 @@ export default function(data) {
 
   const yDomain = getUnique(data, yDim);
 
-  console.log(data, height);
-
   const xScale = scaleLinear()
     .domain(extent(data, d => d[xDim]))
     .range([0, plotWidth]);
@@ -69,9 +66,7 @@ export default function(data) {
     .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-  // [[{year: 2018}, {year: 2012, state: "WA"}], ...]
   const preppedData = prepData(data);
-  const t3 = transition().duration(1000);
 
   let lines = svg
     .selectAll('.line-between')
@@ -209,8 +204,6 @@ export default function(data) {
         .size(35),
     )
     .attr('fill', '#923124');
-
-  // huh huh huh
 
   const t2 = transition().duration(3000);
   svg

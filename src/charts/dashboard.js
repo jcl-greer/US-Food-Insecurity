@@ -1,10 +1,8 @@
 import {select, create, pointer} from 'd3-selection';
-import {csv, json} from 'd3-fetch';
 import {scaleLinear, scaleTime, scaleBand} from 'd3-scale';
 import {extent, min, max, sum, range} from 'd3-array';
 import {axisBottom, axisLeft} from 'd3-axis';
 import {format} from 'd3-format';
-import {symbol, symbolTriangle, line} from 'd3-shape';
 import {scaleQuantile, scaleQuantize} from 'd3-scale';
 import {transition} from 'd3-transition';
 import {schemeBlues, schemeOrRd} from 'd3-scale-chromatic';
@@ -12,54 +10,6 @@ import {geoPath, geoAlbersUsa} from 'd3-geo';
 import * as topojson from 'topojson-client';
 import {ease, easeCubicIn, easeBounceOut, easeBackInOut} from 'd3-ease';
 import {legendColor} from 'd3-svg-legend';
-// import './main.css';
-
-// Promise.all([
-//   json('./data/states-albers-10m.json'),
-//   json('./data/final_state_insecurity.json'),
-// ])
-//   .then(results => {
-//     const [us, insecure] = results;
-//     console.log('The results are ', us, insecure);
-//     map(us, insecure);
-//     scatter(insecure);
-//     stackedBar(insecure);
-//   })
-//   // .then()
-//   .catch(e => {
-//     // handle error here
-//     console.log('the error is ', e);
-//   });
-
-function yearDropdown(insecure, onChange) {
-  // convert dropdown keys to values
-  function convertYear(d) {
-    return d === '2013'
-      ? 2013
-      : d === '2014'
-      ? 2014
-      : d === '2015'
-      ? 2015
-      : d === '2016'
-      ? 2016
-      : d === '2017'
-      ? 2017
-      : d === '2018'
-      ? 2018
-      : none;
-  }
-
-  // dropdown
-  // const dropDown = select('#year-dropdown')
-  //   .selectAll('.option')
-  //   .data(['2013', '2014', '2015', '2016', '2017', '2018'])
-  //   .enter()
-  //   .append('option')
-  //   .text(d => d)
-  //   .attr('value', d => convertYear(d));
-
-  dropDown.select('#year-dropdown').on('change', onChange);
-}
 
 export default function(us, insecure) {
   console.log('MADE IT TO THIS COOL FUNCTION', insecure);
@@ -78,47 +28,9 @@ export default function(us, insecure) {
     child: false,
   };
 
-  // const dropDown = select('#year-dropdown')
-  //   .selectAll('.option')
-  //   .data(['2013', '2014', '2015', '2016', '2017', '2018'])
-  //   .enter()
-  //   .append('option')
-  //   .text(d => d)
-  //   .attr('value', d => convertYear(d));
-
-  // function yearFilter(us, insecure) {
-  //   d3.select('#map')
-  //     .selectAll('*')
-  //     .remove();
-  //   d3.select('#hist')
-  //     .selectAll('*')
-  //     .remove();
-  //   state.selectedYear = this.value;
-  //   console.log('This is ! ', this.value);
-  // }
-
   map(us, insecure, dashState.selectedYear, dashState.child);
   scatter(insecure, dashState.selectedYear);
   stackedBar(insecure, dashState.selectedYear, dashState.child);
-
-  // yearDropdown(insecure, function(d) {
-  //   select('#map')
-  //     .selectAll('*')
-  //     .remove();
-  //   // select('#budget-scatter')
-  //   //   .selectAll('*')
-  //   //   .remove();
-  //   state.selectedYear = this.value;
-  //   myMap(us, insecure, state.selectedYear, state.child);
-  //   // myHist(
-  //   //   caSchools,
-  //   //   state.yearFilter,
-  //   //   state.maxCoverage,
-  //   //   state.minEnrollment,
-  //   //   state.schoolType,
-  //   //   state.marker,
-  //   // );
-  // });
 }
 
 function map(us, insecure, selectedYear, child) {
@@ -128,7 +40,7 @@ function map(us, insecure, selectedYear, child) {
   const margin = {left: 10, top: 10, bottom: 10, right: 20};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
-  let projection = geoAlbersUsa();
+  // let projection = geoAlbersUsa();
 
   const colorDim = 'Food Insecurity Rate';
 
@@ -141,24 +53,13 @@ function map(us, insecure, selectedYear, child) {
 
   const color = scaleQuantize()
     .domain(extent(insecure, d => d[colorDim]))
-    .range(schemeOrRd[9]);
-
-  console.log('the object is ', data);
-  console.log('uncleaned (in js!) data is ', insecure);
-  console.log('the us is ', us);
+    .range(schemeOrRd[5]);
 
   let path = geoPath();
 
   let states = (states = new Map(
     us.objects.states.geometries.map(d => [d.id, d.properties]),
   ));
-
-  console.log(
-    'tjhe topojson features thing is ',
-    topojson.feature(us, us.objects.states).features,
-  );
-
-  // const svg = create('svg').attr('viewBox', [0, 0, 975, 610]);
 
   const svg = select('#slide-content #map-budget #map')
     .append('svg')
@@ -174,7 +75,6 @@ function map(us, insecure, selectedYear, child) {
     .selectAll('path')
     .data(topojson.feature(us, us.objects.states).features)
     .join('path')
-    // .attr('fill', '#4280f4')
     .attr('class', 'state')
     .attr('fill', d => color(data[d.id]))
     .attr('d', path)
@@ -265,7 +165,6 @@ function map(us, insecure, selectedYear, child) {
   };
 
   const tooltip = svg.append('g');
-  // console.log('this is ', this);
   svg
     .selectAll('.state')
     .on('touchmove mousemove', function(event, d) {
@@ -289,14 +188,39 @@ function map(us, insecure, selectedYear, child) {
         .lower();
     });
 
+  svg
+    .append('g')
+    .append('text')
+    .attr('class', 'title')
+    .attr('text-anchor', 'middle')
+    .attr('x', plotWidth / 2.5)
+    .attr('y', margin.top * 2)
+    .attr('font-size', '22px')
+    .text('Food Insecurity Rates by State');
+
+  svg
+    .append('g')
+    .attr('class', 'legendQuant')
+    .attr('font-size', '11.5px')
+    .attr('transform', `translate(${plotWidth - margin.right * 21}, 1)`);
+
+  let colorLegend = legendColor()
+    .labelFormat(format('.1%'))
+    .scale(color)
+    .shapeHeight(20)
+    .shapeWidth(70)
+    .title('Food Insecure Rate (%)')
+    .orient('horizontal')
+    .titleWidth(200);
+
+  svg.select('.legendQuant').call(colorLegend);
+
   select('svg').attr('transform', 'scale(.75)');
 }
 
 function scatter(initialData, selectedYear, marker = null) {
   console.log('the data is ', initialData);
   let data = initialData.filter(d => d.Year === 2018);
-
-  // console.log('The new data is ', data);
 
   const height = 350;
   const width = 425;
@@ -324,9 +248,7 @@ function scatter(initialData, selectedYear, marker = null) {
     .range([plotHeight, 0]);
 
   const colorScale = scaleQuantize()
-    // .nice()
     .domain(extent(data, d => d[colorVar]))
-    // .range(['#a7d4ff', '#bbd9f1', '#77aaff', '#4383ed', '#0960c5', '#003c99']);
     .range([
       '#bfdbff',
       '#9dc5fe',
