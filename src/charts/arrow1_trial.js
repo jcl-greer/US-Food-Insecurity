@@ -74,7 +74,7 @@ export default function(initialData) {
     .filter(d => {
       return d.Year === 2012;
     })
-    .attr('r', 5)
+    .attr('r', 4.5)
     .attr('fill', '#1f77b4');
 
   const t2 = transition().duration(3000);

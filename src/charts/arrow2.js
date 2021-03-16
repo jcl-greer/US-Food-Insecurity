@@ -168,6 +168,38 @@ function arrow2(data) {
   //   .attr('r', 4)
   //   .attr('fill', '#1f77b4');
 
+  // The Line Scraps
+  // svg
+  //   .selectAll('.line-between')
+  //   .data(preppedData)
+  //   .join(enter => enter.append('path'))
+  //   .transition()
+  //   .duration(2000)
+  //   .attrTween('d', function(d) {
+  //     var previous = select(this).attr('d');
+  //     var current = lineScale(d);
+  //     return interpolatePath(previous, current);
+  //   });
+
+  // svg
+  //   .selectAll('.line-between')
+  //   .data(preppedData)
+  //   .join(enter =>
+  //     enter
+  //       .append('path')
+  //       .attr('d', lineScale)
+  //       .attr('cy', d => yScale(d[yDim]) * 0)
+  //       .attr('cx', d => xScale(d[xDim]) * 1.5)
+  //       .call(el =>
+  //         el
+  //           .transition(t)
+  //           .delay((d, i) => i * 1)
+  //           .attr('cy', d => yScale(d[yDim]))
+  //           .attr('cx', d => xScale(d[xDim])),
+  //       ),
+  //   )
+  //   .attr('class', 'line-between');
+
   const t = transition().duration(1600);
   svg
     .selectAll('.triangle')

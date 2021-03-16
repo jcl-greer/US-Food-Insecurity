@@ -85,17 +85,12 @@ export default function(data) {
 
   lines
     .attr('stroke-dashoffset', function(d) {
-      // Get the path length of the current element
       const pathLength = this.getTotalLength();
-      // console.log('d is ', d, pathLength);
-      // console.log(' the path length is ', pathLength);
-      return `${0 - pathLength}`;
+      return `${pathLength}`;
     })
 
     .attr('stroke-dasharray', function(d) {
-      // Get the path length of the current element
       const pathLength = this.getTotalLength();
-      // console.log(' the path length is ', pathLength);
       return `${pathLength}`;
     })
     .transition()

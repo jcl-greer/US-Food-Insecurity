@@ -1,19 +1,16 @@
 import {select, selectAll} from 'd3-selection';
-import {csv, json} from 'd3-fetch';
 import {scaleLinear, scaleTime, scaleBand} from 'd3-scale';
 import {extent, min, max} from 'd3-array';
 import {axisBottom, axisLeft} from 'd3-axis';
 import {symbol, symbolTriangle, line} from 'd3-shape';
 import {transition, easeLinear} from 'd3-transition';
-// import './main.css';
+import {interpolatePath} from 'd3-interpolate-path';
 
 // very helpful resource on transitions
 // https://observablehq.com/@d3/selection-join
 
 // helpful for potential shape changes
 // https://stackoverflow.com/questions/17437408/how-to-change-a-circle-into-a-square-with-d3-js
-
-// [[{year: 2018}, {year: 2012, state: "WA"}], ...]
 
 export default function(initialData) {
   if (!select('svg').empty()) {
@@ -22,7 +19,7 @@ export default function(initialData) {
   }
   let data = initialData.filter(({Year}) => 2012 && Year <= 2018);
 
-  // my bad iterative function
+  // configures data into form appropriate for line plotting
   function prepData(data) {
     const len = data.length;
     let fullArr = [];
@@ -31,7 +28,6 @@ export default function(initialData) {
       for (let j = 0; j < len; j++) {
         let rowArr = [];
         if (data[i].State === data[j].State && data[i].Year !== data[j].Year) {
-          // console.log(data[i], data[j]);
           rowArr.push(data[i]);
           rowArr.push(data[j]);
           fullArr.push(rowArr);
@@ -58,11 +54,6 @@ export default function(initialData) {
 
   const yDomain = getUnique(data, yDim);
 
-  console.log(extent(data, d => d[xDim]));
-  console.log(extent(data, d => d[yDim]));
-
-  console.log(data, height);
-
   const xScale = scaleLinear()
     .domain(extent(data, d => d[xDim]))
     .range([0, plotWidth]);
@@ -82,8 +73,6 @@ export default function(initialData) {
     .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-  // [[{year: 2018}, {year: 2012, state: "WA"}], ...]
-  // const preppedData = [];
   const preppedData = prepData(data);
   const t3 = transition().duration(1000);
 
@@ -96,42 +85,22 @@ export default function(initialData) {
     .attr('stroke', '#fba55c')
     .attr('stroke-width', '2')
     .attr('fill', 'none');
-  // .style('opacity', 0);
 
   lines
     .attr('stroke-dashoffset', function(d) {
-      // Get the path length of the current element
       const pathLength = this.getTotalLength();
-      // console.log(' the path length is ', pathLength);
-      return `${-pathLength}`;
+      return `${pathLength}`;
     })
 
     .attr('stroke-dasharray', function(d) {
-      // Get the path length of the current element
       const pathLength = this.getTotalLength();
-      // console.log(' the path length is ', pathLength);
-      return `${2 * pathLength}`;
+      return `${pathLength}`;
     })
     .transition()
     .delay((d, i) => i * 7)
-    // .ease(easeLinear)
     .style('opacity', 1)
     .duration(2200)
     .attr('stroke-dashoffset', 0);
-
-  // working static circles
-  // svg
-  //   .selectAll('.circle')
-  //   .data(data)
-  //   .join('circle')
-  //   .filter(d => {
-  //     return d.Year === 2012;
-  //   })
-  //   .attr('class', 'circle')
-  //   .attr('cx', d => xScale(d[xDim]))
-  //   .attr('cy', d => yScale(d[yDim]))
-  //   .attr('r', 4)
-  //   .attr('fill', '#1f77b4');
 
   // secret circle rect
   svg
@@ -144,8 +113,8 @@ export default function(initialData) {
     .attr('class', 'circle')
     .attr('rx', 100)
     .attr('ry', 100)
-    .attr('x', d => xScale(d[xDim]) - 5)
-    .attr('y', d => yScale(d[yDim]) - 5)
+    .attr('x', d => xScale(d[xDim]) - 4.5)
+    .attr('y', d => yScale(d[yDim]) - 4.5)
     .attr('width', 9)
     .attr('height', 9)
     .attr('fill', '#1f77b4');
