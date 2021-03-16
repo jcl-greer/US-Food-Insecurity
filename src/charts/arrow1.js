@@ -25,8 +25,6 @@ json('./data/state_covid.json')
   });
 
 function arrow1(data) {
-  // my bad iterative function
-
   const height = 700;
   const width = 700;
   const margin = {top: 60, left: 60, right: 60, bottom: 60};

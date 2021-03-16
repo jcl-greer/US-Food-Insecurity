@@ -47,12 +47,12 @@ body {
 }
 
 #slide-detail {
-  width: 300px;
-  min-width: 300px;
+  width: 200px;
+  min-width: 200px;
   border-right: thin solid black;
-  height: 800px;
+  height: 700px;
   padding: 10px;
-  font-size: 18px;
+  font-size: 16px;
 }
 
  

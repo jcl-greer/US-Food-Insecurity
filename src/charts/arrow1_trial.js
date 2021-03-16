@@ -6,7 +6,6 @@ import {axisBottom, axisLeft} from 'd3-axis';
 import {symbol, symbolTriangle, line} from 'd3-shape';
 import {transition, easeLinear} from 'd3-transition';
 import {ease, easeCubicIn, easeBounceOut, easeBackInOut} from 'd3-ease';
-// import './main.css';
 
 // very helpful resource on transitions
 // https://observablehq.com/@d3/selection-join
@@ -14,39 +13,25 @@ import {ease, easeCubicIn, easeBounceOut, easeBackInOut} from 'd3-ease';
 // for those pesky labels
 // https://observablehq.com/@abebrath/scatterplot-of-text-labels
 
-// json('./data/state_covid.json')
-//   .then(x => x.filter(({Year}) => 2012 && Year <= 2018))
-//   .then(data => arrow1(data))
-//   .catch(e => {
-//     console.log(e);
-//   });
-
 export default function(initialData) {
   if (!select('svg').empty()) {
-    // select('svg').remove();
     selectAll('svg').remove();
   }
   let data = initialData.filter(({Year}) => 2012 && Year <= 2018);
 
-  function getUnique(data, key) {
-    return data.reduce((acc, row) => acc.add(row[key]), new Set());
-  }
-
-  const height = 800;
-  const width = 700;
-  const margin = {top: 60, left: 60, right: 60, bottom: 60};
+  const height = 600;
+  const width = 550;
+  const margin = {top: 40, left: 40, right: 40, bottom: 40};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
 
   const xDim = 'Food Insecurity Rate';
   const yDim = 'State';
 
+  function getUnique(data, key) {
+    return data.reduce((acc, row) => acc.add(row[key]), new Set());
+  }
   const yDomain = getUnique(data, yDim);
-
-  // console.log(extent(data, d => d[xDim]));
-  // console.log(extent(data, d => d[yDim]));
-
-  // console.log(data, height);
 
   const xScale = scaleLinear()
     .domain(extent(data, d => d[xDim]))
@@ -69,11 +54,9 @@ export default function(initialData) {
 
   const t = transition().duration(1500);
 
-  // working transition circles
   svg
     .selectAll('.circle')
     .data(data)
-
     .join(enter =>
       enter
         .append('circle')
@@ -82,7 +65,6 @@ export default function(initialData) {
         .call(el =>
           el
             .transition(t)
-            // .ease(easeBackInOut.overshoot(0.5))
             .delay((d, i) => i * 1)
             .attr('cy', d => yScale(d[yDim]))
             .attr('cx', d => xScale(d[xDim])),
@@ -94,8 +76,6 @@ export default function(initialData) {
     })
     .attr('r', 5)
     .attr('fill', '#1f77b4');
-
-  // Try out delay on this after the circles appear
 
   const t2 = transition().duration(3000);
   svg
@@ -151,7 +131,7 @@ export default function(initialData) {
     .attr('y', 0 - margin.top / 2)
     .attr('font-size', '18px')
     .text(
-      'State Food Insecurity Rates in 2012 Were Still High Due to the Great Recession',
+      'Food Insecurity Rates Were Still High in 2012, Due to the Great Recession',
     );
   svg
     .append('g')
