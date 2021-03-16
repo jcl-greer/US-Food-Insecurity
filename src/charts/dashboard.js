@@ -53,7 +53,7 @@ function map(us, insecure, selectedYear, child) {
 
   const color = scaleQuantize()
     .domain(extent(insecure, d => d[colorDim]))
-    .range(schemeOrRd[5]);
+    .range(schemeBlues[5]);
 
   let path = geoPath();
 
@@ -79,14 +79,10 @@ function map(us, insecure, selectedYear, child) {
     .attr('fill', d => color(data[d.id]))
     .attr('d', path)
     .on('mouseover', function(d, i) {
-      console.log('this is ', this, d, i);
       select(this)
         .transition()
         .duration('50')
-        .attr('opacity', '.5')
-        .attr('fill', 'black')
-        .attr('stroke', 'black')
-        .attr('stroke-width', 2);
+        .attr('fill', '#fba55c');
       select('#budget-scatter')
         .selectAll('*')
         .remove();
@@ -171,7 +167,7 @@ function map(us, insecure, selectedYear, child) {
       tooltip.call(
         callout,
         `${d.properties.name}
-        ${colorDim} ${data[d.id]}`,
+        ${colorDim} ${(100 * data[d.id]).toFixed(2) + '%'}`,
       );
       tooltip
         .attr('transform', `translate(${pointer(event)})`)
@@ -209,7 +205,6 @@ function map(us, insecure, selectedYear, child) {
     .scale(color)
     .shapeHeight(20)
     .shapeWidth(70)
-    .title('Food Insecure Rate (%)')
     .orient('horizontal')
     .titleWidth(200);
 
@@ -249,16 +244,17 @@ function scatter(initialData, selectedYear, marker = null) {
 
   const colorScale = scaleQuantize()
     .domain(extent(data, d => d[colorVar]))
-    .range([
-      '#bfdbff',
-      '#9dc5fe',
-      // '#7daefc',
-      '#5f97f9',
-      '#4280f4',
-      // '#2667ec',
-      '#084de3',
-      '#002fd6',
-    ]);
+    // .range([
+    //   '#bfdbff',
+    //   '#9dc5fe',
+    //   // '#7daefc',
+    //   '#5f97f9',
+    //   '#4280f4',
+    //   // '#2667ec',
+    //   '#084de3',
+    //   '#002fd6',
+    // ]);
+    .range(schemeBlues[5]);
 
   function columnHas(data, col, allowedValues) {
     const rows = [];
@@ -543,6 +539,16 @@ function stackedBar(initialData, selectedYear, child, marker = null) {
     .text
     // 'Due to COVID-19, Estimated 2020 State Insecurity Rates Exceed 2012 Rates in Many States',
     ();
+
+  svg
+    .append('g')
+    .append('text')
+    .attr('class', 'title')
+    .attr('text-anchor', 'middle')
+    .attr('x', plotWidth / 2)
+    .attr('y', margin.top * 2)
+    .attr('font-size', '18px')
+    .text('Total Food Insecure Persons by State');
 
   // svg
   //   .append('g')

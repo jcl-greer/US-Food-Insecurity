@@ -28,8 +28,6 @@ Promise.all([
 ])
   .then(results => {
     const [geo, insecure, covid] = results;
-
-    console.log('The results are ', geo, insecure);
     main(geo, insecure, covid);
   })
   .catch(e => {
@@ -76,16 +74,12 @@ const slides = [
 ];
 
 function main(geo, insecure, covid) {
-  // state
-
   let slideData = new Object();
 
   slideData[0] = covid;
   slideData[1] = covid;
   slideData[2] = covid;
   slideData[3] = [geo, insecure];
-
-  console.log('The data is ', covid);
 
   let currentSlideIdx = 0;
   const updateState = newIdx => {
@@ -128,8 +122,8 @@ function main(geo, insecure, covid) {
     header.text(currentSlide.title);
     body.text(currentSlide.content);
     if (currentSlideIdx === 3) {
-      detail.style('min-width', '150px');
-      detail.style('width', '150px');
+      detail.style('min-width', '115px');
+      detail.style('width', '115px');
       dropdown1.style('display', 'inline');
       dropdown2.style('display', 'inline');
     } else {

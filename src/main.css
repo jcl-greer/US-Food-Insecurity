@@ -47,8 +47,11 @@ body {
 }
 
 #slide-detail {
-  width: 200px;
-  min-width: 200px;
+  flex-shrink: 2;
+  display: flex;
+  justify-content: start;
+  width: 300px;
+  min-width: 300px;
   border-right: thin solid black;
   height: 700px;
   padding: 10px;
@@ -91,15 +94,13 @@ body {
   border: 1px solid grey;
 }
 
-
 #map-budget {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  justify-content: start;
-
+  justify-content: center;
+  align-items: center;
 }
-
 
 .progress-dot {
   height: 20px;
@@ -107,10 +108,7 @@ body {
   background-color: cornflowerblue;
   display: inline-block;
   margin: 5px;
-  cursor: pointer;
 }
-
-
 
 #prev {
   min-width: 50px;
