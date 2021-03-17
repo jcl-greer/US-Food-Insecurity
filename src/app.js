@@ -122,8 +122,8 @@ function main(geo, insecure, covid) {
     header.text(currentSlide.title);
     body.text(currentSlide.content);
     if (currentSlideIdx === 3) {
-      detail.style('min-width', '115px');
-      detail.style('width', '115px');
+      detail.style('min-width', '100px');
+      detail.style('width', '100px');
       dropdown1.style('display', 'inline');
       dropdown2.style('display', 'inline');
     } else {

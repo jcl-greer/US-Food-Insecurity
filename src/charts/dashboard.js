@@ -17,24 +17,62 @@ export default function(us, insecure) {
     select('svg').remove();
   }
 
+  // helper function for tooltip
+  const callout = (g, value) => {
+    if (!value) return g.style('display', 'none');
+
+    g.style('display', null)
+      .style('pointer-events', 'none')
+      .style('font', '11px Gill Sans');
+
+    const path = g
+      .selectAll('path')
+      .data([null])
+      .join('path')
+      .attr('fill', 'white')
+      .attr('stroke', 'black');
+
+    const text = g
+      .selectAll('text')
+      .data([null])
+      .join('text')
+      .call(text =>
+        text
+          .selectAll('tspan')
+          .data((value + '').split(/\n/))
+          .join('tspan')
+          .attr('x', 0)
+          .attr('font-size', '14px')
+          .attr('y', (d, i) => `${i * 1.1}em`)
+          .style('font-weight', (_, i) => (i ? null : 'bold'))
+          .text(d => d),
+      );
+
+    const {x, y, width: w, height: h} = text.node().getBBox();
+    console.log('this function was fired');
+
+    text.attr('transform', `translate(${-w / 2},${15 - y})`);
+    path.attr(
+      'd',
+      `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`,
+    );
+  };
+
   // possible metrics
   // Child Food Insecurity Rate
   // Food Insecurity Rate
   // # of Food Insecure Children
   // # of Food Insecure Persons
 
-  const dashState = {
-    selectedYear: 2018,
-    child: false,
-  };
+  // this for the tooltip
+  // https://bl.ocks.org/d3noob/180287b6623496dbb5ac4b048813af52
 
-  map(us, insecure, dashState.selectedYear, dashState.child);
-  scatter(insecure, dashState.selectedYear);
-  stackedBar(insecure, dashState.selectedYear, dashState.child);
+  map(us, insecure, callout);
+  scatter(insecure, callout);
+  stackedBar(insecure, callout);
 }
 
-function map(us, insecure, selectedYear, child) {
-  console.log('starting this function', this, selectedYear);
+function map(us, insecure, callout) {
   const height = 650;
   const width = 1000;
   const margin = {left: 10, top: 10, bottom: 10, right: 20};
@@ -86,11 +124,11 @@ function map(us, insecure, selectedYear, child) {
       select('#budget-scatter')
         .selectAll('*')
         .remove();
-      scatter(insecure, 2018, i['id']);
+      scatter(insecure, callout, i['id']);
       select('#stacked-bar')
         .selectAll('*')
         .remove();
-      stackedBar(insecure, 2018, false, i['id']);
+      stackedBar(insecure, callout, i['id']);
     })
     .on('mouseout', function(d, i) {
       select(this)
@@ -102,12 +140,12 @@ function map(us, insecure, selectedYear, child) {
       select('#budget-scatter')
         .selectAll('*')
         .remove();
-      scatter(insecure, 2018);
+      scatter(insecure, callout);
       select('#stacked-bar')
         .selectAll('*')
         .remove();
 
-      stackedBar(insecure, 2018, false);
+      stackedBar(insecure, callout);
     });
 
   svg
@@ -120,45 +158,45 @@ function map(us, insecure, selectedYear, child) {
     .attr('stroke-linejoin', 'round')
     .attr('d', path);
 
-  const callout = (g, value) => {
-    if (!value) return g.style('display', 'none');
+  // const callout = (g, value) => {
+  //   if (!value) return g.style('display', 'none');
 
-    g.style('display', null)
-      .style('pointer-events', 'none')
-      .style('font', '10px sans-serif');
+  //   g.style('display', null)
+  //     .style('pointer-events', 'none')
+  //     .style('font', '11px Gill Sans');
 
-    const path = g
-      .selectAll('path')
-      .data([null])
-      .join('path')
-      .attr('fill', 'white')
-      .attr('stroke', 'black');
+  //   const path = g
+  //     .selectAll('path')
+  //     .data([null])
+  //     .join('path')
+  //     .attr('fill', 'white')
+  //     .attr('stroke', 'black');
 
-    const text = g
-      .selectAll('text')
-      .data([null])
-      .join('text')
-      .call(text =>
-        text
-          .selectAll('tspan')
-          .data((value + '').split(/\n/))
-          .join('tspan')
-          .attr('x', 0)
-          .attr('font-size', '14px')
-          .attr('y', (d, i) => `${i * 1.1}em`)
-          .style('font-weight', (_, i) => (i ? null : 'bold'))
-          .text(d => d),
-      );
+  //   const text = g
+  //     .selectAll('text')
+  //     .data([null])
+  //     .join('text')
+  //     .call(text =>
+  //       text
+  //         .selectAll('tspan')
+  //         .data((value + '').split(/\n/))
+  //         .join('tspan')
+  //         .attr('x', 0)
+  //         .attr('font-size', '14px')
+  //         .attr('y', (d, i) => `${i * 1.1}em`)
+  //         .style('font-weight', (_, i) => (i ? null : 'bold'))
+  //         .text(d => d),
+  //     );
 
-    const {x, y, width: w, height: h} = text.node().getBBox();
-    console.log('this function was fired');
+  //   const {x, y, width: w, height: h} = text.node().getBBox();
+  //   console.log('this function was fired');
 
-    text.attr('transform', `translate(${-w / 2},${15 - y})`);
-    path.attr(
-      'd',
-      `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`,
-    );
-  };
+  //   text.attr('transform', `translate(${-w / 2},${15 - y})`);
+  //   path.attr(
+  //     'd',
+  //     `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`,
+  //   );
+  // };
 
   const tooltip = svg.append('g');
   svg
@@ -172,7 +210,6 @@ function map(us, insecure, selectedYear, child) {
       tooltip
         .attr('transform', `translate(${pointer(event)})`)
         .select('#map')
-        .attr('stroke', 'red')
         .attr('font-size', '12px')
         .raise();
     })
@@ -213,7 +250,7 @@ function map(us, insecure, selectedYear, child) {
   select('svg').attr('transform', 'scale(.75)');
 }
 
-function scatter(initialData, selectedYear, marker = null) {
+function scatter(initialData, callout, marker = null) {
   console.log('the data is ', initialData);
   let data = initialData.filter(d => d.Year === 2018);
 
@@ -417,13 +454,18 @@ function prepStackData(data) {
   return fullArr;
 }
 
-function stackedBar(initialData, selectedYear, child, marker = null) {
+function stackedBar(initialData, callout, marker = null) {
   console.log('the data is ', initialData);
   let yearData = initialData.filter(d => d.Year === 2018);
   const xDim = '# of Food Insecure Persons';
   let data = prepStackData(
     yearData.sort((a, b) => (a[xDim] > b[xDim] ? 1 : -1)),
   );
+
+  let div = select('#slide-content #stacked-bar')
+    .append('div')
+    .attr('class', 'tooltip')
+    .style('opacity', 0);
 
   function columnHas(data, col, allowedValues) {
     const rows = [];
@@ -448,6 +490,7 @@ function stackedBar(initialData, selectedYear, child, marker = null) {
     return data.map(d => ({
       state: d.state,
       id: d.id,
+      rawValue: d.value,
       value: d.value / total,
       startValue: value / total,
       endValue: (value += d.value) / total,
@@ -505,8 +548,40 @@ function stackedBar(initialData, selectedYear, child, marker = null) {
     .attr('y', plotHeight / 5)
     .attr('width', d => xScale(d.endValue) - xScale(d.startValue))
     .attr('height', plotHeight / 6)
-    .attr('fill', 'steelblue')
-    .attr('stroke', 'white');
+    .attr('fill', '#1f77b4')
+    .attr('stroke', 'white')
+    .on('mouseover', function(event, d) {
+      select(this)
+        .transition()
+        .duration('50')
+        .attr('fill', '#fba55c');
+
+      div
+        .transition()
+        .duration(200)
+        .style('opacity', 1);
+      div
+        .html(
+          'State: ' +
+            stackData[d.id].state +
+            '<br/>' +
+            'Total Food Insecure: ' +
+            stackData[d.id].rawValue,
+        )
+        .style('center', event.pageX + 'px')
+        .style('top', event.pageY - 28 + 'px');
+    })
+    .on('mouseout', function(d) {
+      select(this)
+        .transition()
+        .duration('50')
+        .attr('fill', '#1f77b4');
+
+      div
+        .transition()
+        .duration(500)
+        .style('opacity', 0);
+    });
 
   if (marker !== null) {
     console.log('THE MARKER IS ', [marker]);
