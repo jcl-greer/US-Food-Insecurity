@@ -74,6 +74,17 @@ body {
 }
 
 
+.drop-title {
+  min-width: 200px;
+  border: 2px solid black;
+}
+
+.drop-title #year-dropdown {
+  min-width: 150px;
+  color: red;
+}
+
+
 #map-budget {
   display: flex;
   flex-wrap: wrap;

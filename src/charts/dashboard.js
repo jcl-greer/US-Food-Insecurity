@@ -85,7 +85,10 @@ export default function(us, insecure) {
     .join('div')
     .attr('id', 'year-dropdown');
 
-  dropdowns.append('div').text(['Select Year']);
+  dropdowns
+    .append('div')
+    .attr('class', 'year-d')
+    .text(['Select Year']);
 
   dropdowns
     .append('select')
@@ -99,6 +102,7 @@ export default function(us, insecure) {
     })
     .selectAll('options')
     .data(yearArr.map(year => ({year})))
+    .attr('id', 'year-dropdown')
     .join('option')
     .text(d => d.year);
 }
@@ -639,7 +643,7 @@ function stackedBar(
     .attr('x', plotWidth / 2)
     .attr('y', margin.top * 2)
     .attr('font-size', '18px')
-    .text('Total Food Insecure Persons by State (' + selectedYear + ')');
+    .text('Total Food Insecure Population by State (' + selectedYear + ')');
 
   svg
     .append('g')
@@ -648,6 +652,6 @@ function stackedBar(
     .attr('text-anchor', 'middle')
     .attr('x', plotWidth / 2)
     .attr('y', plotHeight / 1.75)
-    .text('% Share of Food Insecure Persons')
+    .text('% Share of Food Insecure Population')
     .attr('font-size', '14px');
 }
