@@ -251,7 +251,7 @@ function map(us, insecure, callout, marker = null) {
 }
 
 function scatter(us, initialData, callout, marker = null) {
-  console.log('the data is ', initialData);
+  console.log('the budget scatter data is ', initialData);
   let data = initialData.filter(d => d.Year === 2018);
 
   const height = 350;
@@ -317,9 +317,38 @@ function scatter(us, initialData, callout, marker = null) {
     .attr('class', 'budget-scatter')
     .attr('cx', d => xScale(d[xDim]))
     .attr('cy', d => yScale(d[yDim]))
-    .attr('r', 5)
+    .attr('r', 4.5)
     .attr('fill', d => colorScale(d[colorVar]))
-    .attr('stroke', 'black');
+    .attr('stroke', 'black')
+    .on('mouseover', function(d, i) {
+      select(this)
+        .transition()
+        .duration('50')
+        .attr('fill', '#fba55c');
+      select('.stacked-bar')
+        .selectAll('*')
+        .remove();
+      stackedBar(us, initialData, callout, i['id']);
+      // select('#map')
+      //   .selectAll('*')
+      //   .remove();
+      // map(us, initialData, callout, i['id']);
+    })
+    .on('mouseout', function(d, i) {
+      select(this)
+        .transition()
+        .duration('50')
+        .attr('fill', '#1f77b4');
+      select('.stacked-bar')
+        .selectAll('*')
+        .remove();
+      stackedBar(us, initialData, callout);
+      // select('#map')
+      //   .selectAll('*')
+      //   .remove();
+      // stackedBar(us, initialData, callout);
+    });
+
   const t = transition().duration(1500);
   // svg
   //   .selectAll('#budget-scatter')
@@ -395,31 +424,6 @@ function scatter(us, initialData, callout, marker = null) {
   //   .attr('font-size', '10px')
   //   .attr('fill', 'black');
 
-  const form = format(',');
-
-  const tooltip = svg.append('g');
-  svg
-    .selectAll('.stacked-bar')
-    .on('touchmove mousemove', function(event, d) {
-      tooltip.call(
-        callout,
-        `${'State: ' + d.state}
-          ${'Total Food Insecure Persons: ' + form(d.rawValue)}`,
-      );
-      tooltip
-        .attr('transform', `translate(${pointer(event)})`)
-        .select('#stacked-bar')
-        .attr('font-size', '12px')
-        .raise();
-    })
-    .on('touchend mouseleave', function() {
-      tooltip
-        .call(callout, null)
-        .select('#stacked-bar')
-        .attr('stroke', null)
-        .lower();
-    });
-
   svg
     .append('g')
     .attr('class', 'x-axis')
@@ -440,7 +444,7 @@ function scatter(us, initialData, callout, marker = null) {
     .attr('x', plotWidth / 2)
     .attr('y', 0 - margin.top / 2)
     .attr('font-size', '16px')
-    .text('Annual Food Budget Shortfalls by State');
+    .text('Annual Food Budget Shortfalls by State ($)');
   svg
     .append('g')
     .append('text')
@@ -460,8 +464,34 @@ function scatter(us, initialData, callout, marker = null) {
     .attr('text-anchor', 'middle')
     .attr('x', 0 - plotHeight / 2)
     .attr('y', -margin.left / 1.15)
-    .text('Food Budget Shortage Per 100,000')
+    .text('Food Budget Shortage Per 100,000 ($)')
     .attr('font-size', '12px');
+
+  const form = format('$.2s');
+
+  const tooltip = svg.append('g');
+  svg
+    .selectAll('.budget-scatter')
+    .on('touchmove mousemove', function(event, d) {
+      tooltip.call(
+        callout,
+        `${'State: ' + d.State}
+              ${'Annual Budget Shortfall: ' + form(d[xDim])}
+              ${'Shortfall per 100,000: ' + form(d[yDim])}`,
+      );
+      tooltip
+        .attr('transform', `translate(${pointer(event)})`)
+        .select('.budget-scatter')
+        .attr('font-size', '12px')
+        .raise();
+    })
+    .on('touchend mouseleave', function() {
+      tooltip
+        .call(callout, null)
+        .select('.budget-scatter')
+        .attr('stroke', null)
+        .lower();
+    });
 }
 
 function prepStackData(data) {
@@ -576,7 +606,6 @@ function stackedBar(us, initialData, callout, marker = null) {
     .attr('fill', '#1f77b4')
     .attr('stroke', 'white')
     .on('mouseover', function(d, i) {
-      console.log('the D is ', this, d);
       select(this)
         .transition()
         .duration('50')
@@ -662,18 +691,6 @@ function stackedBar(us, initialData, callout, marker = null) {
     .attr('class', 'title')
     .attr('text-anchor', 'middle')
     .attr('x', plotWidth / 2)
-    .attr('y', 40)
-    .attr('font-size', 20)
-    .text
-    // 'Due to COVID-19, Estimated 2020 State Insecurity Rates Exceed 2012 Rates in Many States',
-    ();
-
-  svg
-    .append('g')
-    .append('text')
-    .attr('class', 'title')
-    .attr('text-anchor', 'middle')
-    .attr('x', plotWidth / 2)
     .attr('y', margin.top * 2)
     .attr('font-size', '18px')
     .text('Total Food Insecure Persons by State');
@@ -687,21 +704,4 @@ function stackedBar(us, initialData, callout, marker = null) {
     .attr('y', plotHeight / 1.75)
     .text('% Share of Food Insecure Persons')
     .attr('font-size', '14px');
-
-  // svg
-  //   .append('g')
-  //   .attr('font-family', 'sans-serif')
-  //   .attr('font-size', 12)
-  //   .selectAll('text')
-  //   .data(stackData)
-  //   .join('text')
-  //   .attr('transform', d => `translate(${xScale(d.startValue) + 6}, 6)`)
-  //   .call(text =>
-  //     text
-  //       .append('tspan')
-  //       .attr('x', 0)
-  //       .attr('y', 430)
-  //       .attr('fill-opacity', 0.7)
-  //       .text(d => d.state),
-  //   );
 }
