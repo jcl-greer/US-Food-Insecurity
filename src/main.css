@@ -20,15 +20,10 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-
-  min-height: 40px;
-  height: 40px;
-  /* margin-bottom: 5px; */
-  /* background-color: #8dd5b3; */
+  min-height: 45px;
+  height: 45px;
   background-color: #923124;
-  opacity: 0.9;
   color: white;
-  /* border-bottom: solid black 2px; */
 }
 
 .flex {
@@ -57,14 +52,12 @@ body {
   font-size: 16px;
 }
 
- 
 #slide-content {
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
 }
 
 #filters {
@@ -73,28 +66,21 @@ body {
   font-size: 18;
 }
 
-
-.drop-title {
-  min-width: 200px;
-  border: 2px solid black;
-}
-
-.drop-title #year-dropdown {
-  min-width: 150px;
-  color: red;
-}
-
-
 #map-budget {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
   justify-content: center;
-
   align-items: center;
   border-bottom: 1px solid black;
-
+  /* background-color: #ffffe0; */
+  /* background-color: #efe2ba; */
+  /* background-color: #eee2dc; */
+  /* background-color: #f0dfd9; */
+  /* background-color: #b8949e; */
+  background-color:rgba(184, 148, 158, 0.5)
 }
+
 
 .progress-dot {
   height: 20px;
@@ -105,12 +91,12 @@ body {
 }
 
 #prev {
-  min-width: 40px;
+  min-width: 35px;
 }
 
 #next {
-  min-width: 40px;
-  margin-left: 5px;
+  min-width: 35px;
+  margin-left: 3px;
 }
 
 #filters div{

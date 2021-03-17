@@ -1,25 +1,12 @@
-import {select, create, pointer} from 'd3-selection';
-import {csv, json} from 'd3-fetch';
-import {scaleLinear, scaleTime, scaleBand} from 'd3-scale';
-import {extent, min, max, sum, range} from 'd3-array';
-import {axisBottom, axisLeft} from 'd3-axis';
-import {format} from 'd3-format';
-import {symbol, symbolTriangle, line} from 'd3-shape';
-import {scaleQuantile, scaleQuantize} from 'd3-scale';
-import {transition} from 'd3-transition';
-import {schemeBlues, schemeOrRd} from 'd3-scale-chromatic';
-import {geoPath, geoAlbersUsa} from 'd3-geo';
-import * as topojson from 'topojson-client';
-import {ease, easeCubicIn, easeBounceOut, easeBackInOut} from 'd3-ease';
-import {legendColor} from 'd3-svg-legend';
+import {select} from 'd3-selection';
+import {json} from 'd3-fetch';
+
 import './main.css';
 
 import arrow1 from './charts/arrow1_trial';
 import arrow2 from './charts/arrow2_trial';
 import arrow3 from './charts/arrow3_trial';
 import dash from './charts/dashboard';
-
-// // added a comment
 
 Promise.all([
   json('./data/states-albers-10m.json'),
@@ -36,19 +23,18 @@ Promise.all([
 
 const slides = [
   {
-    title: 'Food Insecurity Rates During / After the Great Recession',
+    title: 'Food Insecurity Rates Were High After The Great Recession',
     content:
-      'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.',
+      'Millions of people across the United States (approximately 1 in 9) suffer with food insecurity, meaning they lack regular access to adequate food. This project examines the trends in domestic food insecurity at the state level, from 2012 to 2020. The food insecurity crisis ballooned following the Great Recession, as higher unemployment rates and declines in median household incomes led to higher rates of household poverty. The United States was still in the midst of recovering from the Recession in 2012, and national food insecurity rates were far above pre-Recession levels. Among states, there was a high degree of variation in rates. Southeastern states such as Mississippi, Arkansas, and Georgia suffered from food insecurity rates as high as ~22%, while the national statewide average was about 15%.',
     render: data => {
       arrow1(data);
     },
   },
 
   {
-    title:
-      'Food Insecurity Rates Have Declined From the Heights during the recession',
+    title: "Insecurity Rates Declined Significantly over the 2010's",
     content:
-      'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.',
+      'By 2018, state level food insecurity rates had finally returned to Pre-Recession levels. Over this period, food insecurity rates fell in all states - precipitously in most. The drop was especially profound in states like Georgia, South Carolina, and California, where either food insecurity rates or overall populations were previously quite high. The national statewide average had now dropped to approximately ~12%. Despite experiencing some of the higher drops in food insecurity rates, states in the southeast still had, on average, higher food insecurity rates.',
     render: data => {
       arrow2(data);
     },
@@ -63,11 +49,10 @@ const slides = [
     },
   },
   {
-    title: 'Explore the Map!',
+    title: 'Explore the Dashboard',
     content:
-      'Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
+      'The dashboard contains food insecurity data from 2013 - 2018. In addition to food insecurity rates, it also includes the number of food insecure and accumulated food budget shortfalls per state.',
     render: data => {
-      console.log('THE NEW DATA IS ', data);
       dash(data[0], data[1]);
     },
   },
@@ -87,8 +72,6 @@ function main(geo, insecure, covid) {
     renderSlide();
     drawProgress();
   };
-
-  // configuration stuff
 
   const header = select('#slide-detail h2');
   const body = select('#slide-detail p');
@@ -120,8 +103,8 @@ function main(geo, insecure, covid) {
     header.text(currentSlide.title);
     body.text(currentSlide.content);
     if (currentSlideIdx === 3) {
-      detail.style('min-width', '100px');
-      detail.style('width', '100px');
+      detail.style('min-width', '125px');
+      detail.style('width', '125px');
     } else {
       detail.style('min-width', '350px');
       detail.style('width', '350px');

@@ -226,7 +226,7 @@ export default function(data) {
     .text(d => d[yDim])
     .attr('font-size', '11px')
     .attr('fill', '#aec7e8')
-    .attr('font-weight', '600');
+    .attr('font-weight', '500');
 
   svg
     .append('g')

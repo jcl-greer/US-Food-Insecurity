@@ -1,18 +1,22 @@
 import {select, selectAll, pointer} from 'd3-selection';
-import {scaleLinear, scaleTime, scaleBand} from 'd3-scale';
-import {extent, min, max, sum, range} from 'd3-array';
+import {scaleLinear} from 'd3-scale';
+import {extent, min, max, sum} from 'd3-array';
 import {axisBottom, axisLeft} from 'd3-axis';
 import {format} from 'd3-format';
-import {scaleQuantile, scaleQuantize} from 'd3-scale';
+import {scaleQuantize} from 'd3-scale';
 import {transition} from 'd3-transition';
-import {schemeBlues, schemeOrRd} from 'd3-scale-chromatic';
+import {schemeBlues} from 'd3-scale-chromatic';
 import {geoPath, geoAlbersUsa} from 'd3-geo';
 import * as topojson from 'topojson-client';
-import {ease, easeCubicIn, easeBounceOut, easeBackInOut} from 'd3-ease';
 import {legendColor} from 'd3-svg-legend';
 
+// this for the tooltip
+// https://bl.ocks.org/d3noob/180287b6623496dbb5ac4b048813af52
+
+// this for the map
+// https://observablehq.com/@d3/state-choropleth
+
 export default function(us, insecure) {
-  console.log('MADE IT TO THIS COOL FUNCTION', insecure);
   if (!select('svg').empty()) {
     select('svg').remove();
   }
@@ -23,7 +27,7 @@ export default function(us, insecure) {
 
     g.style('display', null)
       .style('pointer-events', 'none')
-      .style('font', '11px Gill Sans');
+      .style('font', '11px Gill Sans MT');
 
     const path = g
       .selectAll('path')
@@ -49,7 +53,6 @@ export default function(us, insecure) {
       );
 
     const {x, y, width: w, height: h} = text.node().getBBox();
-    console.log('this function was fired');
 
     text.attr('transform', `translate(${-w / 2},${15 - y})`);
     path.attr(
@@ -69,9 +72,7 @@ export default function(us, insecure) {
     return rows;
   }
 
-  // this for the tooltip
-  // https://bl.ocks.org/d3noob/180287b6623496dbb5ac4b048813af52
-
+  // Call initial with Year Set to 2013
   map(us, insecure, callout, columnHas, 2013);
   scatter(us, insecure, callout, columnHas, 2013);
   stackedBar(us, insecure, callout, columnHas, 2013);
@@ -83,12 +84,12 @@ export default function(us, insecure) {
     .selectAll('.drop-down')
     .data(['Year'])
     .join('div')
-    .attr('id', 'year-dropdown');
-
+    .attr('id', 'drop');
   dropdowns
-    .append('div')
-    .attr('class', 'year-d')
-    .text(['Select Year']);
+    .append('span')
+    .attr('class', 'dropdown-title')
+    .text(['Select a Year  '])
+    .style('font-weight', 'bold');
 
   dropdowns
     .append('select')
@@ -96,6 +97,7 @@ export default function(us, insecure) {
       if (!select('svg').empty()) {
         selectAll('svg').remove();
       }
+      // recalls functions when dropdown is used
       map(us, insecure, callout, columnHas, event.target.value);
       scatter(us, insecure, callout, columnHas, event.target.value);
       stackedBar(us, insecure, callout, columnHas, event.target.value);
@@ -107,6 +109,7 @@ export default function(us, insecure) {
     .text(d => d.year);
 }
 
+// CONSTRUCTS THE STATE LEVEL MAP
 function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
   const height = 650;
   const width = 1000;
@@ -117,9 +120,7 @@ function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
 
   const colorDim = 'Food Insecurity Rate';
 
-  // insecure = insecure.filter(d => d.Year === 2018);
   insecure = insecure.filter(d => d.Year == selectedYear);
-
   let data = insecure.reduce(
     (obj, item) => Object.assign(obj, {[item.id]: item[colorDim]}),
     {},
@@ -225,16 +226,17 @@ function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
     .append('text')
     .attr('class', 'title')
     .attr('text-anchor', 'middle')
-    .attr('x', plotWidth / 2.5)
+    .attr('x', plotWidth / 2.65)
     .attr('y', margin.top * 2)
     .attr('font-size', '22px')
+    .style('font-weight', 'bold')
     .text(selectedYear + ' Food Insecurity Rates by State');
 
   svg
     .append('g')
     .attr('class', 'legendQuant')
     .attr('font-size', '11.5px')
-    .attr('transform', `translate(${plotWidth - margin.right * 21}, 1)`);
+    .attr('transform', `translate(${plotWidth - margin.right * 20}, 1)`);
 
   let colorLegend = legendColor()
     .labelFormat(format('.1%'))
@@ -249,6 +251,7 @@ function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
   select('svg').attr('transform', 'scale(.75)');
 }
 
+// CONSTRUCTS THE BUDGET SCATTERPLOT
 function scatter(
   us,
   initialData,
@@ -257,14 +260,7 @@ function scatter(
   selectedYear,
   marker = null,
 ) {
-  console.log('the budget scatter data is ', initialData);
-  console.log('and the selected year is ', Number(selectedYear));
-  // let data = initialData.filter(d => d.Year === 2018);
   let data = initialData.filter(d => d.Year == selectedYear);
-
-  console.log(initialData.filter(d => d.Year === 2014));
-
-  console.log('and now it is ', data);
 
   const height = 350;
   const width = 425;
@@ -326,36 +322,14 @@ function scatter(
       select(this)
         .transition()
         .duration('50')
-        .attr('fill', '#1f77b4');
+        .attr('fill', d => colorScale(d[colorVar]));
       select('.stacked-bar')
         .selectAll('*')
         .remove();
       stackedBar(us, initialData, callout, columnHas, selectedYear);
     });
 
-  const t = transition().duration(1500);
-  // svg
-  //   .selectAll('#budget-scatter')
-  //   .data(data)
-  //   .join(enter =>
-  //     enter
-  //       .append('circle')
-  //       .attr('cy', d => yScale(d[yDim]) * 0)
-  //       .attr('cx', d => xScale(d[xDim]) * 2.5)
-  //       .call(el =>
-  //         el
-  //           .transition(t)
-  //           .ease(easeBackInOut.overshoot(1.5))
-  //           .attr('cy', d => yScale(d[yDim]))
-  //           .attr('cx', d => xScale(d[xDim])),
-  //       ),
-  //   )
-  //   .attr('id', 'budget-scatter')
-
-  //   .attr('r', 3.5)
-  //   .attr('fill', d => colorScale(d[colorVar]))
-  //   .attr('stroke', 'black');
-
+  // highlights if hovering over other chart
   if (marker !== null) {
     let selectedState = columnHas(data, 'id', marker);
 
@@ -368,8 +342,6 @@ function scatter(
       .attr('stroke', 'black')
       .attr('stroke-width', '1px')
       .attr('r', 4.5);
-  } else {
-    console.log('NOOOOOOOOOO MARKER');
   }
 
   svg
@@ -392,13 +364,13 @@ function scatter(
     .append('g')
     .attr('class', 'x-axis')
     .attr('transform', `translate(0, ${plotHeight})`)
-    .call(axisBottom(xScale).ticks(11, '.2s'));
+    .call(axisBottom(xScale).ticks(6, '.2s'));
 
   svg
     .append('g')
     .attr('class', 'y-axis')
     .attr('transform', `translate(${-5})`)
-    .call(axisLeft(yScale).ticks(15, '.2s'));
+    .call(axisLeft(yScale).ticks(12, '.2s'));
 
   svg
     .append('g')
@@ -408,6 +380,7 @@ function scatter(
     .attr('x', plotWidth / 2)
     .attr('y', 0 - margin.top / 2)
     .attr('font-size', '16px')
+    .style('font-weight', 'bold')
     .text(selectedYear + ' Annual Food Budget Shortfalls by State ($)');
   svg
     .append('g')
@@ -416,7 +389,7 @@ function scatter(
     .attr('text-anchor', 'middle')
     .attr('x', plotWidth / 2)
     .attr('y', plotHeight + 30)
-
+    .style('font-weight', 'bold')
     .text('Total Annual Budget Shortfall ($)')
     .attr('font-size', '12px');
 
@@ -428,6 +401,7 @@ function scatter(
     .attr('text-anchor', 'middle')
     .attr('x', 0 - plotHeight / 2)
     .attr('y', -margin.left / 1.15)
+    .style('font-weight', 'bold')
     .text('Food Budget Shortage Per 100,000 ($)')
     .attr('font-size', '12px');
 
@@ -458,6 +432,7 @@ function scatter(
     });
 }
 
+// util function for configuring data for stacked bar
 function prepStackData(data) {
   let fullArr = [];
   for (let i = 0; i < data.length; i++) {
@@ -472,6 +447,7 @@ function prepStackData(data) {
   return fullArr;
 }
 
+// CONSTRUCTS THE STACKED BAR CHART
 function stackedBar(
   us,
   initialData,
@@ -480,8 +456,6 @@ function stackedBar(
   selectedYear,
   marker = null,
 ) {
-  console.log('the data is ', initialData);
-  // let yearData = initialData.filter(d => d.Year === 2018);
   let yearData = initialData.filter(d => d.Year == selectedYear);
   const xDim = '# of Food Insecure Persons';
   let data = prepStackData(
@@ -493,7 +467,6 @@ function stackedBar(
     .attr('class', 'tooltip')
     .style('opacity', 0);
 
-  console.log('the new data is ', data);
   const height = 300;
   const width = 1200;
   const margin = {top: 10, left: 60, right: 60, bottom: 10};
@@ -514,8 +487,6 @@ function stackedBar(
   }
 
   let stackData = stack(data);
-  console.log('The stack data is ', stackData);
-  const t1 = transition().duration(600);
 
   const xScale = scaleLinear()
     .domain([0, 1])
@@ -527,29 +498,6 @@ function stackedBar(
     .attr('width', width)
     .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
-
-  // what to change this to update only
-  // svg
-  //   .selectAll('.rect')
-  //   .data(stackData)
-  //   .join(enter =>
-  //     enter
-  //       .append('rect')
-  //       .attr('opacity', 0)
-  //       .call(el =>
-  //         el
-  //           .transition(t1)
-  //           .delay((d, i) => i * 20)
-  //           .attr('opacity', 1),
-  //       ),
-  //   )
-  //   .attr('id', 'stacked-bar')
-  //   .attr('x', d => xScale(d.startValue))
-  //   .attr('y', plotHeight / 5)
-  //   .attr('width', d => xScale(d.endValue) - xScale(d.startValue))
-  //   .attr('height', plotHeight / 6)
-  //   .attr('fill', 'steelblue')
-  //   .attr('stroke', 'white');
 
   svg
     .selectAll('.stacked-bar')
@@ -568,6 +516,7 @@ function stackedBar(
         .transition()
         .duration('50')
         .attr('fill', '#fba55c');
+
       select('.budget-scatter')
         .selectAll('*')
         .remove();
@@ -577,7 +526,8 @@ function stackedBar(
       select(this)
         .transition()
         .duration('50')
-        .attr('fill', '#1f77b4');
+        .attr('fill', '#1f77b4')
+        .attr('stroke', 'white');
       select('.budget-scatter')
         .selectAll('*')
         .remove();
@@ -599,7 +549,7 @@ function stackedBar(
       tooltip.call(
         callout,
         `${'State: ' + d.state}
-          ${'Total Food Insecure Persons: ' + form(d.rawValue)}`,
+          ${'Total Food Insecure Population: ' + form(d.rawValue)}`,
       );
       tooltip
         .attr('transform', `translate(${pointer(event)})`)
@@ -615,10 +565,9 @@ function stackedBar(
         .lower();
     });
 
+  // highlights if hovering over other chart
   if (marker !== null) {
-    console.log('THE MARKER IS ', [marker]);
     let selectedState = columnHas(stackData, 'id', marker);
-    console.log('the selected STate is ', selectedState);
 
     svg
       .append('g')
@@ -643,7 +592,9 @@ function stackedBar(
     .attr('x', plotWidth / 2)
     .attr('y', margin.top * 2)
     .attr('font-size', '18px')
-    .text('Total Food Insecure Population by State (' + selectedYear + ')');
+    .text(
+      'Share of Total Food Insecure Population by State (' + selectedYear + ')',
+    );
 
   svg
     .append('g')
@@ -653,5 +604,6 @@ function stackedBar(
     .attr('x', plotWidth / 2)
     .attr('y', plotHeight / 1.75)
     .text('% Share of Food Insecure Population')
-    .attr('font-size', '14px');
+    .attr('font-size', '14px')
+    .style('font-weight', 'bold');
 }
