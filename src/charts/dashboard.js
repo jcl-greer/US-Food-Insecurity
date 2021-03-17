@@ -110,7 +110,7 @@ function map(us, insecure, callout, columnHas, marker = null) {
     us.objects.states.geometries.map(d => [d.id, d.properties]),
   ));
 
-  const svg = select('#slide-content #map-budget .map')
+  const svg = select('#slide-content #map-budget #map')
     .append('svg')
     .attr('height', height)
     .attr('width', width)
@@ -120,16 +120,17 @@ function map(us, insecure, callout, columnHas, marker = null) {
 
   svg
     .append('g')
-    .attr('class', '.map')
-    .selectAll('state')
+    .attr('id', 'map')
+    .selectAll('path')
     .data(topojson.feature(us, us.objects.states).features)
     .join('path')
-    .attr('id', d => 'state_' + data[d.id])
+    .attr('class', 'state')
     .attr('fill', d => color(data[d.id]))
     .attr('d', path)
     .attr('stroke', 'whitesmoke')
     .attr('stroke-width', '2px')
     .attr('stroke-linejoin', 'round')
+
     .on('mouseover', function(d, i) {
       select(this)
         .transition()
@@ -150,7 +151,6 @@ function map(us, insecure, callout, columnHas, marker = null) {
         .duration('50')
         .attr('opacity', '1')
         .attr('fill', d => color(data[d.id]));
-      // .attr('stroke', 'white');
       select('.budget-scatter')
         .selectAll('*')
         .remove();
@@ -158,58 +158,19 @@ function map(us, insecure, callout, columnHas, marker = null) {
       select('.stacked-bar')
         .selectAll('*')
         .remove();
+
       stackedBar(us, insecure, callout, columnHas);
     });
 
-  // svg
-  //   .select('.map')
-  //   .append('path')
-  //   .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
-  //   .attr('fill', 'none')
-  //   .attr('stroke', 'white')
-  //   .attr('stroke-width', '2px')
-  //   .attr('stroke-linejoin', 'round')
-  //   .attr('d', path);
-
-  // const callout = (g, value) => {
-  //   if (!value) return g.style('display', 'none');
-
-  //   g.style('display', null)
-  //     .style('pointer-events', 'none')
-  //     .style('font', '11px Gill Sans');
-
-  //   const path = g
-  //     .selectAll('path')
-  //     .data([null])
-  //     .join('path')
-  //     .attr('fill', 'white')
-  //     .attr('stroke', 'black');
-
-  //   const text = g
-  //     .selectAll('text')
-  //     .data([null])
-  //     .join('text')
-  //     .call(text =>
-  //       text
-  //         .selectAll('tspan')
-  //         .data((value + '').split(/\n/))
-  //         .join('tspan')
-  //         .attr('x', 0)
-  //         .attr('font-size', '14px')
-  //         .attr('y', (d, i) => `${i * 1.1}em`)
-  //         .style('font-weight', (_, i) => (i ? null : 'bold'))
-  //         .text(d => d),
-  //     );
-
-  //   const {x, y, width: w, height: h} = text.node().getBBox();
-  //   console.log('this function was fired');
-
-  //   text.attr('transform', `translate(${-w / 2},${15 - y})`);
-  //   path.attr(
-  //     'd',
-  //     `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`,
-  //   );
-  // };
+  svg
+    .select('#map')
+    .append('path')
+    .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
+    .attr('fill', 'none')
+    .attr('stroke', 'white')
+    .attr('stroke-width', '1.5px')
+    .attr('stroke-linejoin', 'round')
+    .attr('d', path);
 
   const tooltip = svg.append('g');
   svg
@@ -222,14 +183,14 @@ function map(us, insecure, callout, columnHas, marker = null) {
       );
       tooltip
         .attr('transform', `translate(${pointer(event)})`)
-        .select('.map')
+        .select('#map')
         .attr('font-size', '12px')
         .raise();
     })
     .on('touchend mouseleave', function() {
       tooltip
         .call(callout, null)
-        .select('.map')
+        .select('#map')
         .attr('stroke', null)
         .lower();
     });
@@ -626,7 +587,9 @@ function stackedBar(us, initialData, callout, columnHas, marker = null) {
     });
 
   if (marker !== null) {
+    console.log('THE MARKER IS ', [marker]);
     let selectedState = columnHas(stackData, 'id', marker);
+    console.log('the selected STate is ', selectedState);
 
     svg
       .append('g')
