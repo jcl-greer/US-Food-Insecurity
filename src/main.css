@@ -121,14 +121,5 @@ body {
 }
 
 
-.tooltip {
-  position: absolute;
-  text-align: center;
-  padding: 4px;
-  background: white;
-  border: 1px solid black;
-  pointer-events: none;
-}
-
 
 

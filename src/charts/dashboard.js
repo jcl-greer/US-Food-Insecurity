@@ -68,11 +68,11 @@ export default function(us, insecure) {
   // https://bl.ocks.org/d3noob/180287b6623496dbb5ac4b048813af52
 
   map(us, insecure, callout);
-  scatter(insecure, callout);
-  stackedBar(insecure, callout);
+  scatter(us, insecure, callout);
+  stackedBar(us, insecure, callout);
 }
 
-function map(us, insecure, callout) {
+function map(us, insecure, callout, marker = null) {
   const height = 650;
   const width = 1000;
   const margin = {left: 10, top: 10, bottom: 10, right: 20};
@@ -121,14 +121,14 @@ function map(us, insecure, callout) {
         .transition()
         .duration('50')
         .attr('fill', '#fba55c');
-      select('#budget-scatter')
+      select('.budget-scatter')
         .selectAll('*')
         .remove();
-      scatter(insecure, callout, i['id']);
+      scatter(us, insecure, callout, i['id']);
       select('.stacked-bar')
         .selectAll('*')
         .remove();
-      stackedBar(insecure, callout, i['id']);
+      stackedBar(us, insecure, callout, i['id']);
     })
     .on('mouseout', function(d, i) {
       select(this)
@@ -137,15 +137,15 @@ function map(us, insecure, callout) {
         .attr('opacity', '1')
         .attr('fill', d => color(data[d.id]))
         .attr('stroke', 'white');
-      select('#budget-scatter')
+      select('.budget-scatter')
         .selectAll('*')
         .remove();
-      scatter(insecure, callout);
+      scatter(us, insecure, callout);
       select('.stacked-bar')
         .selectAll('*')
         .remove();
 
-      stackedBar(insecure, callout);
+      stackedBar(us, insecure, callout);
     });
 
   svg
@@ -250,7 +250,7 @@ function map(us, insecure, callout) {
   select('svg').attr('transform', 'scale(.75)');
 }
 
-function scatter(initialData, callout, marker = null) {
+function scatter(us, initialData, callout, marker = null) {
   console.log('the data is ', initialData);
   let data = initialData.filter(d => d.Year === 2018);
 
@@ -303,7 +303,7 @@ function scatter(initialData, callout, marker = null) {
     return rows;
   }
 
-  const svg = select('#slide-content #map-budget #budget-scatter')
+  const svg = select('#slide-content #map-budget .budget-scatter')
     .append('svg')
     .attr('height', height)
     .attr('width', width)
@@ -360,7 +360,7 @@ function scatter(initialData, callout, marker = null) {
       .attr('fill', '#fba55c')
       .attr('stroke', 'black')
       .attr('stroke-width', '1px')
-      .attr('id', 'budget-scatter')
+      // .attr('id', 'budget-scatter_' + d.id)
       .attr('r', 4.5);
   } else {
     console.log('NOOOOOOOOOO MARKER');
@@ -394,6 +394,31 @@ function scatter(initialData, callout, marker = null) {
   //   .text(d => d['State'])
   //   .attr('font-size', '10px')
   //   .attr('fill', 'black');
+
+  const form = format(',');
+
+  const tooltip = svg.append('g');
+  svg
+    .selectAll('.stacked-bar')
+    .on('touchmove mousemove', function(event, d) {
+      tooltip.call(
+        callout,
+        `${'State: ' + d.state}
+          ${'Total Food Insecure Persons: ' + form(d.rawValue)}`,
+      );
+      tooltip
+        .attr('transform', `translate(${pointer(event)})`)
+        .select('#stacked-bar')
+        .attr('font-size', '12px')
+        .raise();
+    })
+    .on('touchend mouseleave', function() {
+      tooltip
+        .call(callout, null)
+        .select('#stacked-bar')
+        .attr('stroke', null)
+        .lower();
+    });
 
   svg
     .append('g')
@@ -448,13 +473,12 @@ function prepStackData(data) {
       id: obj.id,
       value: obj['# of Food Insecure Persons'],
     };
-    // console.log('The New Object is ', newObj);
     fullArr.push(newObj);
   }
   return fullArr;
 }
 
-function stackedBar(initialData, callout, marker = null) {
+function stackedBar(us, initialData, callout, marker = null) {
   console.log('the data is ', initialData);
   let yearData = initialData.filter(d => d.Year === 2018);
   const xDim = '# of Food Insecure Persons';
@@ -551,19 +575,43 @@ function stackedBar(initialData, callout, marker = null) {
     .attr('height', plotHeight / 6)
     .attr('fill', '#1f77b4')
     .attr('stroke', 'white')
-    .on('mouseover', function(event, d) {
+    .on('mouseover', function(d, i) {
       console.log('the D is ', this, d);
       select(this)
         .transition()
         .duration('50')
         .attr('fill', '#fba55c');
+      select('.budget-scatter')
+        .selectAll('*')
+        .remove();
+      scatter(us, initialData, callout, i['id']);
+      // select('#map')
+      //   .selectAll('*')
+      //   .remove();
+      // map(us, initialData, callout, i['id']);
     })
-    .on('mouseout', function(d) {
+    .on('mouseout', function(d, i) {
       select(this)
         .transition()
         .duration('50')
         .attr('fill', '#1f77b4');
+      select('.budget-scatter')
+        .selectAll('*')
+        .remove();
+      scatter(us, initialData, callout);
+      // select('#map')
+      //   .selectAll('*')
+      //   .remove();
+      // stackedBar(us, initialData, callout);
     });
+
+  svg
+    .append('g')
+    .attr('class', 'x-axis')
+    .attr('transform', `translate(0, ${plotHeight / 2.5})`)
+    .call(axisBottom(xScale).ticks(10, '%'));
+
+  const form = format(',');
 
   const tooltip = svg.append('g');
   svg
@@ -572,7 +620,7 @@ function stackedBar(initialData, callout, marker = null) {
       tooltip.call(
         callout,
         `${'State: ' + d.state}
-          ${'Total Food Insecure: ' + d.rawValue}`,
+          ${'Total Food Insecure Persons: ' + form(d.rawValue)}`,
       );
       tooltip
         .attr('transform', `translate(${pointer(event)})`)
@@ -629,6 +677,16 @@ function stackedBar(initialData, callout, marker = null) {
     .attr('y', margin.top * 2)
     .attr('font-size', '18px')
     .text('Total Food Insecure Persons by State');
+
+  svg
+    .append('g')
+    .append('text')
+    .attr('class', 'x-label')
+    .attr('text-anchor', 'middle')
+    .attr('x', plotWidth / 2)
+    .attr('y', plotHeight / 1.75)
+    .text('% Share of Food Insecure Persons')
+    .attr('font-size', '14px');
 
   // svg
   //   .append('g')
