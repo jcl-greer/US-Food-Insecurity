@@ -110,6 +110,13 @@ function map(us, insecure, callout, columnHas, marker = null) {
     us.objects.states.geometries.map(d => [d.id, d.properties]),
   ));
 
+  console.log(
+    'THE MAP DATA IS ',
+    typeof topojson.feature(us, us.objects.states).features,
+    topojson.feature(us, us.objects.states).features,
+    us.objects.states,
+  );
+
   const svg = select('#slide-content #map-budget .map')
     .append('svg')
     .attr('height', height)
@@ -127,9 +134,6 @@ function map(us, insecure, callout, columnHas, marker = null) {
     .attr('id', d => 'state_' + data[d.id])
     .attr('fill', d => color(data[d.id]))
     .attr('d', path)
-    .attr('stroke', 'whitesmoke')
-    .attr('stroke-width', '2px')
-    .attr('stroke-linejoin', 'round')
     .on('mouseover', function(d, i) {
       select(this)
         .transition()
@@ -149,8 +153,8 @@ function map(us, insecure, callout, columnHas, marker = null) {
         .transition()
         .duration('50')
         .attr('opacity', '1')
-        .attr('fill', d => color(data[d.id]));
-      // .attr('stroke', 'white');
+        .attr('fill', d => color(data[d.id]))
+        .attr('stroke', 'white');
       select('.budget-scatter')
         .selectAll('*')
         .remove();
@@ -161,15 +165,51 @@ function map(us, insecure, callout, columnHas, marker = null) {
       stackedBar(us, insecure, callout, columnHas);
     });
 
-  // svg
-  //   .select('.map')
-  //   .append('path')
-  //   .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
-  //   .attr('fill', 'none')
-  //   .attr('stroke', 'white')
-  //   .attr('stroke-width', '2px')
-  //   .attr('stroke-linejoin', 'round')
-  //   .attr('d', path);
+  svg
+    .select('.map')
+    .append('path')
+    .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
+    .attr('fill', 'none')
+    .attr('stroke', 'white')
+    .attr('stroke-width', '1.5px')
+    .attr('stroke-linejoin', 'round')
+    .attr('d', path);
+
+  if (marker !== null) {
+    console.log('THE MARKER IS ', [marker]);
+    let selectedState = columnHas(data, 'id', marker);
+    console.log('the selected STate is ', selectedState);
+    svg
+      .append('g')
+      .attr('id', 'map')
+      .selectAll('path')
+      .data(
+        topojson
+          .feature(us, us.objects.states)
+          .features.filter(
+            i =>
+              topojson.feature(us, us.objects.states).features[i].id ===
+              selectedState[0].id,
+          ),
+      )
+      .join('path')
+      .attr('class', 'state')
+      .attr('fill', '#fba55c')
+      .attr('d', path);
+
+    // svg
+    //   .append('g')
+    //   .append('circle')
+    //   .attr('cy', yScale(selectedState[0][yDim]))
+    //   .attr('cx', xScale(selectedState[0][xDim]))
+    //   .attr('fill', '#fba55c')
+    //   .attr('stroke', 'black')
+    //   .attr('stroke-width', '1px')
+    //   // .attr('id', 'budget-scatter_' + d.id)
+    //   .attr('r', 4.5);
+  } else {
+    console.log('NOOOOOOOOOO MARKER');
+  }
 
   // const callout = (g, value) => {
   //   if (!value) return g.style('display', 'none');
@@ -294,6 +334,16 @@ function scatter(us, initialData, callout, columnHas, marker = null) {
 
   const colorScale = scaleQuantize()
     .domain(extent(data, d => d[colorVar]))
+    // .range([
+    //   '#bfdbff',
+    //   '#9dc5fe',
+    //   // '#7daefc',
+    //   '#5f97f9',
+    //   '#4280f4',
+    //   // '#2667ec',
+    //   '#084de3',
+    //   '#002fd6',
+    // ]);
     .range(schemeBlues[5]);
 
   const svg = select('#slide-content #map-budget .budget-scatter')
@@ -322,6 +372,10 @@ function scatter(us, initialData, callout, columnHas, marker = null) {
         .selectAll('*')
         .remove();
       stackedBar(us, initialData, callout, columnHas, i['id']);
+      select('.map')
+        .selectAll('*')
+        .remove();
+      map(us, initialData, callout, columnHas, i['id']);
     })
     .on('mouseout', function(d, i) {
       select(this)
@@ -332,6 +386,10 @@ function scatter(us, initialData, callout, columnHas, marker = null) {
         .selectAll('*')
         .remove();
       stackedBar(us, initialData, callout, columnHas);
+      select('.map')
+        .selectAll('*')
+        .remove();
+      map(us, initialData, callout, columnHas);
     });
 
   const t = transition().duration(1500);
@@ -358,8 +416,14 @@ function scatter(us, initialData, callout, columnHas, marker = null) {
   //   .attr('stroke', 'black');
 
   if (marker !== null) {
+    console.log('THE MARKER IS ', [marker]);
     let selectedState = columnHas(data, 'id', marker);
-
+    console.log(
+      'the selected STate is ',
+      selectedState,
+      selectedState[0][yDim],
+      selectedState[0][xDim],
+    );
     svg
       .append('g')
       .append('circle')
@@ -368,6 +432,7 @@ function scatter(us, initialData, callout, columnHas, marker = null) {
       .attr('fill', '#fba55c')
       .attr('stroke', 'black')
       .attr('stroke-width', '1px')
+      // .attr('id', 'budget-scatter_' + d.id)
       .attr('r', 4.5);
   } else {
     console.log('NOOOOOOOOOO MARKER');
@@ -582,6 +647,10 @@ function stackedBar(us, initialData, callout, columnHas, marker = null) {
         .selectAll('*')
         .remove();
       scatter(us, initialData, callout, columnHas, i['id']);
+      // select('.map')
+      //   .selectAll('*')
+      //   .remove();
+      // map(us, initialData, callout, i['id']);
     })
     .on('mouseout', function(d, i) {
       select(this)
@@ -592,6 +661,10 @@ function stackedBar(us, initialData, callout, columnHas, marker = null) {
         .selectAll('*')
         .remove();
       scatter(us, initialData, callout, columnHas);
+      // select('.map')
+      //   .selectAll('*')
+      //   .remove();
+      // stackedBar(us, initialData, callout);
     });
 
   svg
@@ -626,7 +699,9 @@ function stackedBar(us, initialData, callout, columnHas, marker = null) {
     });
 
   if (marker !== null) {
+    console.log('THE MARKER IS ', [marker]);
     let selectedState = columnHas(stackData, 'id', marker);
+    console.log('the selected STate is ', selectedState);
 
     svg
       .append('g')
