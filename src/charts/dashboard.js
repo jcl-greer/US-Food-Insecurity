@@ -110,7 +110,7 @@ function map(us, insecure, callout, columnHas, marker = null) {
     us.objects.states.geometries.map(d => [d.id, d.properties]),
   ));
 
-  const svg = select('#slide-content #map-budget #map')
+  const svg = select('#slide-content #map-budget .map')
     .append('svg')
     .attr('height', height)
     .attr('width', width)
@@ -120,11 +120,11 @@ function map(us, insecure, callout, columnHas, marker = null) {
 
   svg
     .append('g')
-    .attr('id', 'map')
-    .selectAll('path')
+    .attr('class', '.map')
+    .selectAll('state')
     .data(topojson.feature(us, us.objects.states).features)
     .join('path')
-    .attr('class', 'state')
+    .attr('id', d => 'state_' + data[d.id])
     .attr('fill', d => color(data[d.id]))
     .attr('d', path)
     .on('mouseover', function(d, i) {
@@ -160,7 +160,7 @@ function map(us, insecure, callout, columnHas, marker = null) {
     });
 
   svg
-    .select('#map')
+    .select('.map')
     .append('path')
     .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
     .attr('fill', 'none')
@@ -168,6 +168,39 @@ function map(us, insecure, callout, columnHas, marker = null) {
     .attr('stroke-width', '1.5px')
     .attr('stroke-linejoin', 'round')
     .attr('d', path);
+
+  if (marker !== null) {
+    console.log('THE MARKER IS ', [marker]);
+    let selectedState = columnHas(data, 'id', marker);
+    console.log(
+      'the selected STate is ',
+      selectedState,
+      selectedState[0][yDim],
+      selectedState[0][xDim],
+    );
+    svg
+      .append('g')
+      .attr('id', 'map')
+      .selectAll('path')
+      .data(topojson.feature(us, us.objects.states).features)
+      .join('path')
+      .attr('class', 'state')
+      .attr('fill', '#fba55c')
+      .attr('d', path);
+
+    svg
+      .append('g')
+      .append('circle')
+      .attr('cy', yScale(selectedState[0][yDim]))
+      .attr('cx', xScale(selectedState[0][xDim]))
+      .attr('fill', '#fba55c')
+      .attr('stroke', 'black')
+      .attr('stroke-width', '1px')
+      // .attr('id', 'budget-scatter_' + d.id)
+      .attr('r', 4.5);
+  } else {
+    console.log('NOOOOOOOOOO MARKER');
+  }
 
   // const callout = (g, value) => {
   //   if (!value) return g.style('display', 'none');
@@ -220,14 +253,14 @@ function map(us, insecure, callout, columnHas, marker = null) {
       );
       tooltip
         .attr('transform', `translate(${pointer(event)})`)
-        .select('#map')
+        .select('.map')
         .attr('font-size', '12px')
         .raise();
     })
     .on('touchend mouseleave', function() {
       tooltip
         .call(callout, null)
-        .select('#map')
+        .select('.map')
         .attr('stroke', null)
         .lower();
     });
@@ -330,7 +363,7 @@ function scatter(us, initialData, callout, columnHas, marker = null) {
         .selectAll('*')
         .remove();
       stackedBar(us, initialData, callout, columnHas, i['id']);
-      // select('#map')
+      // select('.map')
       //   .selectAll('*')
       //   .remove();
       // map(us, initialData, callout, i['id']);
@@ -344,7 +377,7 @@ function scatter(us, initialData, callout, columnHas, marker = null) {
         .selectAll('*')
         .remove();
       stackedBar(us, initialData, callout, columnHas);
-      // select('#map')
+      // select('.map')
       //   .selectAll('*')
       //   .remove();
       // stackedBar(us, initialData, callout);
@@ -605,7 +638,7 @@ function stackedBar(us, initialData, callout, columnHas, marker = null) {
         .selectAll('*')
         .remove();
       scatter(us, initialData, callout, columnHas, i['id']);
-      // select('#map')
+      // select('.map')
       //   .selectAll('*')
       //   .remove();
       // map(us, initialData, callout, i['id']);
@@ -619,7 +652,7 @@ function stackedBar(us, initialData, callout, columnHas, marker = null) {
         .selectAll('*')
         .remove();
       scatter(us, initialData, callout, columnHas);
-      // select('#map')
+      // select('.map')
       //   .selectAll('*')
       //   .remove();
       // stackedBar(us, initialData, callout);
