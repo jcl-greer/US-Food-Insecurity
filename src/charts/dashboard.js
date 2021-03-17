@@ -58,6 +58,17 @@ export default function(us, insecure) {
     );
   };
 
+  // util function for filtering values - used for highlighting points
+  function columnHas(data, col, allowedValues) {
+    const rows = [];
+    for (let i = 0; i < data.length; i += 1) {
+      if (allowedValues.includes(data[i][col])) {
+        rows.push(data[i]);
+      }
+    }
+    return rows;
+  }
+
   // possible metrics
   // Child Food Insecurity Rate
   // Food Insecurity Rate
@@ -67,12 +78,12 @@ export default function(us, insecure) {
   // this for the tooltip
   // https://bl.ocks.org/d3noob/180287b6623496dbb5ac4b048813af52
 
-  map(us, insecure, callout);
-  scatter(us, insecure, callout);
-  stackedBar(us, insecure, callout);
+  map(us, insecure, callout, columnHas);
+  scatter(us, insecure, callout, columnHas);
+  stackedBar(us, insecure, callout, columnHas);
 }
 
-function map(us, insecure, callout, marker = null) {
+function map(us, insecure, callout, columnHas, marker = null) {
   const height = 650;
   const width = 1000;
   const margin = {left: 10, top: 10, bottom: 10, right: 20};
@@ -124,11 +135,11 @@ function map(us, insecure, callout, marker = null) {
       select('.budget-scatter')
         .selectAll('*')
         .remove();
-      scatter(us, insecure, callout, i['id']);
+      scatter(us, insecure, callout, columnHas, i['id']);
       select('.stacked-bar')
         .selectAll('*')
         .remove();
-      stackedBar(us, insecure, callout, i['id']);
+      stackedBar(us, insecure, callout, columnHas, i['id']);
     })
     .on('mouseout', function(d, i) {
       select(this)
@@ -140,12 +151,12 @@ function map(us, insecure, callout, marker = null) {
       select('.budget-scatter')
         .selectAll('*')
         .remove();
-      scatter(us, insecure, callout);
+      scatter(us, insecure, callout, columnHas);
       select('.stacked-bar')
         .selectAll('*')
         .remove();
 
-      stackedBar(us, insecure, callout);
+      stackedBar(us, insecure, callout, columnHas);
     });
 
   svg
@@ -250,7 +261,7 @@ function map(us, insecure, callout, marker = null) {
   select('svg').attr('transform', 'scale(.75)');
 }
 
-function scatter(us, initialData, callout, marker = null) {
+function scatter(us, initialData, callout, columnHas, marker = null) {
   console.log('the budget scatter data is ', initialData);
   let data = initialData.filter(d => d.Year === 2018);
 
@@ -293,16 +304,6 @@ function scatter(us, initialData, callout, marker = null) {
     // ]);
     .range(schemeBlues[5]);
 
-  function columnHas(data, col, allowedValues) {
-    const rows = [];
-    for (let i = 0; i < data.length; i += 1) {
-      if (allowedValues.includes(data[i][col])) {
-        rows.push(data[i]);
-      }
-    }
-    return rows;
-  }
-
   const svg = select('#slide-content #map-budget .budget-scatter')
     .append('svg')
     .attr('height', height)
@@ -328,7 +329,7 @@ function scatter(us, initialData, callout, marker = null) {
       select('.stacked-bar')
         .selectAll('*')
         .remove();
-      stackedBar(us, initialData, callout, i['id']);
+      stackedBar(us, initialData, callout, columnHas, i['id']);
       // select('#map')
       //   .selectAll('*')
       //   .remove();
@@ -342,7 +343,7 @@ function scatter(us, initialData, callout, marker = null) {
       select('.stacked-bar')
         .selectAll('*')
         .remove();
-      stackedBar(us, initialData, callout);
+      stackedBar(us, initialData, callout, columnHas);
       // select('#map')
       //   .selectAll('*')
       //   .remove();
@@ -476,13 +477,13 @@ function scatter(us, initialData, callout, marker = null) {
       tooltip.call(
         callout,
         `${'State: ' + d.State}
-              ${'Annual Budget Shortfall: ' + form(d[xDim])}
-              ${'Shortfall per 100,000: ' + form(d[yDim])}`,
+              ${'Budget Shortfall: ' + form(d[xDim])}
+              ${'Shortfall per 100k: ' + form(d[yDim])}`,
       );
       tooltip
         .attr('transform', `translate(${pointer(event)})`)
         .select('.budget-scatter')
-        .attr('font-size', '12px')
+        .attr('font-size', '11px')
         .raise();
     })
     .on('touchend mouseleave', function() {
@@ -508,7 +509,7 @@ function prepStackData(data) {
   return fullArr;
 }
 
-function stackedBar(us, initialData, callout, marker = null) {
+function stackedBar(us, initialData, callout, columnHas, marker = null) {
   console.log('the data is ', initialData);
   let yearData = initialData.filter(d => d.Year === 2018);
   const xDim = '# of Food Insecure Persons';
@@ -520,16 +521,6 @@ function stackedBar(us, initialData, callout, marker = null) {
     .append('div')
     .attr('class', 'tooltip')
     .style('opacity', 0);
-
-  function columnHas(data, col, allowedValues) {
-    const rows = [];
-    for (let i = 0; i < data.length; i += 1) {
-      if (allowedValues.includes(data[i][col])) {
-        rows.push(data[i]);
-      }
-    }
-    return rows;
-  }
 
   console.log('the new data is ', data);
   const height = 300;
@@ -613,7 +604,7 @@ function stackedBar(us, initialData, callout, marker = null) {
       select('.budget-scatter')
         .selectAll('*')
         .remove();
-      scatter(us, initialData, callout, i['id']);
+      scatter(us, initialData, callout, columnHas, i['id']);
       // select('#map')
       //   .selectAll('*')
       //   .remove();
@@ -627,7 +618,7 @@ function stackedBar(us, initialData, callout, marker = null) {
       select('.budget-scatter')
         .selectAll('*')
         .remove();
-      scatter(us, initialData, callout);
+      scatter(us, initialData, callout, columnHas);
       // select('#map')
       //   .selectAll('*')
       //   .remove();
