@@ -125,7 +125,7 @@ function map(us, insecure, callout) {
         .selectAll('*')
         .remove();
       scatter(insecure, callout, i['id']);
-      select('#stacked-bar')
+      select('.stacked-bar')
         .selectAll('*')
         .remove();
       stackedBar(insecure, callout, i['id']);
@@ -141,7 +141,7 @@ function map(us, insecure, callout) {
         .selectAll('*')
         .remove();
       scatter(insecure, callout);
-      select('#stacked-bar')
+      select('.stacked-bar')
         .selectAll('*')
         .remove();
 
@@ -462,7 +462,7 @@ function stackedBar(initialData, callout, marker = null) {
     yearData.sort((a, b) => (a[xDim] > b[xDim] ? 1 : -1)),
   );
 
-  let div = select('#slide-content #stacked-bar')
+  let div = select('#slide-content .stacked-bar')
     .append('div')
     .attr('class', 'tooltip')
     .style('opacity', 0);
@@ -509,7 +509,7 @@ function stackedBar(initialData, callout, marker = null) {
   // //   .domain(yDomain)
   // //   .range([0, plotHeight]);
 
-  const svg = select('#slide-content #stacked-bar')
+  const svg = select('#slide-content .stacked-bar')
     .append('svg')
     .attr('height', height)
     .attr('width', width)
@@ -540,10 +540,11 @@ function stackedBar(initialData, callout, marker = null) {
   //   .attr('stroke', 'white');
 
   svg
-    .selectAll('.rect')
+    .selectAll('.stacked-bar')
     .data(stackData)
     .join('rect')
-    .attr('id', 'stacked-bar')
+    .attr('class', 'stacked-bar')
+    .attr('id', d => 'bar_' + d.id)
     .attr('x', d => xScale(d.startValue))
     .attr('y', plotHeight / 5)
     .attr('width', d => xScale(d.endValue) - xScale(d.startValue))
@@ -551,36 +552,40 @@ function stackedBar(initialData, callout, marker = null) {
     .attr('fill', '#1f77b4')
     .attr('stroke', 'white')
     .on('mouseover', function(event, d) {
+      console.log('the D is ', this, d);
       select(this)
         .transition()
         .duration('50')
         .attr('fill', '#fba55c');
-
-      div
-        .transition()
-        .duration(200)
-        .style('opacity', 1);
-      div
-        .html(
-          'State: ' +
-            stackData[d.id].state +
-            '<br/>' +
-            'Total Food Insecure: ' +
-            stackData[d.id].rawValue,
-        )
-        .style('center', event.pageX + 'px')
-        .style('top', event.pageY - 28 + 'px');
     })
     .on('mouseout', function(d) {
       select(this)
         .transition()
         .duration('50')
         .attr('fill', '#1f77b4');
+    });
 
-      div
-        .transition()
-        .duration(500)
-        .style('opacity', 0);
+  const tooltip = svg.append('g');
+  svg
+    .selectAll('.stacked-bar')
+    .on('touchmove mousemove', function(event, d) {
+      tooltip.call(
+        callout,
+        `${'State: ' + d.state}
+          ${'Total Food Insecure: ' + d.rawValue}`,
+      );
+      tooltip
+        .attr('transform', `translate(${pointer(event)})`)
+        .select('#stacked-bar')
+        .attr('font-size', '12px')
+        .raise();
+    })
+    .on('touchend mouseleave', function() {
+      tooltip
+        .call(callout, null)
+        .select('#stacked-bar')
+        .attr('stroke', null)
+        .lower();
     });
 
   if (marker !== null) {
