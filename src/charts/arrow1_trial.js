@@ -16,6 +16,7 @@ import {ease, easeCubicIn, easeBounceOut, easeBackInOut} from 'd3-ease';
 export default function(initialData) {
   if (!select('svg').empty()) {
     selectAll('svg').remove();
+    select('#slide-content #filters div').remove();
   }
   let data = initialData.filter(({Year}) => 2012 && Year <= 2018);
 

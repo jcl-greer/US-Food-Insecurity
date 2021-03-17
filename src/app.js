@@ -93,8 +93,6 @@ function main(geo, insecure, covid) {
   const header = select('#slide-detail h2');
   const body = select('#slide-detail p');
   const detail = select('#slide-detail');
-  const dropdown1 = select('#slide-content #filters #year-dropdown');
-  const dropdown2 = select('#slide-content #filters #metric-dropdown');
 
   select('#prev').on('click', () =>
     updateState(currentSlideIdx ? currentSlideIdx - 1 : slides.length - 1),
@@ -124,13 +122,9 @@ function main(geo, insecure, covid) {
     if (currentSlideIdx === 3) {
       detail.style('min-width', '100px');
       detail.style('width', '100px');
-      dropdown1.style('display', 'inline');
-      dropdown2.style('display', 'inline');
     } else {
       detail.style('min-width', '350px');
       detail.style('width', '350px');
-      dropdown1.style('display', 'none');
-      dropdown2.style('display', 'none');
     }
 
     currentSlide.render(slideData[currentSlideIdx]);

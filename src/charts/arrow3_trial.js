@@ -12,6 +12,7 @@ export default function(data) {
   if (!select('svg').empty()) {
     selectAll('svg').remove();
     select('svg').remove();
+    select('#slide-content #filters div').remove();
   }
   // create data structure for lines
   function prepData(data) {

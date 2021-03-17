@@ -70,28 +70,9 @@ body {
 #filters {
   display: flex;
   justify-content: center;
+  font-size: 18;
 }
 
-#year-dropdown {
-  display: none;
-  text-align: center;
-  height: 20px;
-  width: 160px; 
-  font: 13px;
-  background: white; 
-  border: 1px solid grey;
-}
-
-#metric-dropdown {
-  display: none;
-  text-align: center;
-  margin-left: 5px;
-  height: 20px;
-  width: 160px; 
-  font: 13px;
-  background: white; 
-  border: 1px solid grey;
-}
 
 #map-budget {
   display: flex;
@@ -119,6 +100,10 @@ body {
 #next {
   min-width: 40px;
   margin-left: 5px;
+}
+
+#filters div{
+  min-width: 100px;
 }
 
 

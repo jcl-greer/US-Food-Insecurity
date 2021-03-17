@@ -1,4 +1,4 @@
-import {select, create, pointer} from 'd3-selection';
+import {select, selectAll, pointer} from 'd3-selection';
 import {scaleLinear, scaleTime, scaleBand} from 'd3-scale';
 import {extent, min, max, sum, range} from 'd3-array';
 import {axisBottom, axisLeft} from 'd3-axis';
@@ -69,14 +69,12 @@ export default function(us, insecure) {
     return rows;
   }
 
-  // const dropdown = select('#slide-content #filters')
-  //   .append('div')
-  //   .style('display', 'flex')
-  //   .selectAll('.drop-down')
-  //   .data(['2013', '2014', '2015', '2016', '2017', '2018'])
-  //   .join('div');
+  // this for the tooltip
+  // https://bl.ocks.org/d3noob/180287b6623496dbb5ac4b048813af52
 
-  // dropdown.append('div').text('Year');
+  map(us, insecure, callout, columnHas, 2013);
+  scatter(us, insecure, callout, columnHas, 2013);
+  stackedBar(us, insecure, callout, columnHas, 2013);
 
   let yearArr = [2013, 2014, 2015, 2016, 2017, 2018];
 
@@ -84,34 +82,25 @@ export default function(us, insecure) {
     .append('div')
     .selectAll('.drop-down')
     .data(['Year'])
-    .join('div');
+    .join('div')
+    .attr('id', 'year-dropdown');
 
   dropdowns.append('div').text(['Select Year']);
-  // Correctly populates, not sure how to 'save' the selected value
+
   dropdowns
     .append('select')
     .on('change', (event, row) => {
-      console.log('the event and row are ', event.target.value, row);
+      if (!select('svg').empty()) {
+        selectAll('svg').remove();
+      }
+      map(us, insecure, callout, columnHas, event.target.value);
+      scatter(us, insecure, callout, columnHas, event.target.value);
+      stackedBar(us, insecure, callout, columnHas, event.target.value);
     })
     .selectAll('options')
     .data(yearArr.map(year => ({year})))
     .join('option')
     .text(d => d.year);
-
-  // dropdown.append('select').selectAll('option').data()
-
-  // possible metrics
-  // Child Food Insecurity Rate
-  // Food Insecurity Rate
-  // # of Food Insecure Children
-  // # of Food Insecure Persons
-
-  // this for the tooltip
-  // https://bl.ocks.org/d3noob/180287b6623496dbb5ac4b048813af52
-
-  map(us, insecure, callout, columnHas, 2018);
-  scatter(us, insecure, callout, columnHas, 2018);
-  stackedBar(us, insecure, callout, columnHas, 2018);
 }
 
 function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
@@ -125,7 +114,7 @@ function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
   const colorDim = 'Food Insecurity Rate';
 
   // insecure = insecure.filter(d => d.Year === 2018);
-  insecure = insecure.filter(d => d.Year === selectedYear);
+  insecure = insecure.filter(d => d.Year == selectedYear);
 
   let data = insecure.reduce(
     (obj, item) => Object.assign(obj, {[item.id]: item[colorDim]}),
@@ -265,8 +254,13 @@ function scatter(
   marker = null,
 ) {
   console.log('the budget scatter data is ', initialData);
+  console.log('and the selected year is ', Number(selectedYear));
   // let data = initialData.filter(d => d.Year === 2018);
-  let data = initialData.filter(d => d.Year === selectedYear);
+  let data = initialData.filter(d => d.Year == selectedYear);
+
+  console.log(initialData.filter(d => d.Year === 2014));
+
+  console.log('and now it is ', data);
 
   const height = 350;
   const width = 425;
@@ -410,7 +404,7 @@ function scatter(
     .attr('x', plotWidth / 2)
     .attr('y', 0 - margin.top / 2)
     .attr('font-size', '16px')
-    .text('Annual Food Budget Shortfalls by State ($)');
+    .text(selectedYear + ' Annual Food Budget Shortfalls by State ($)');
   svg
     .append('g')
     .append('text')
@@ -484,7 +478,7 @@ function stackedBar(
 ) {
   console.log('the data is ', initialData);
   // let yearData = initialData.filter(d => d.Year === 2018);
-  let yearData = initialData.filter(d => d.Year === selectedYear);
+  let yearData = initialData.filter(d => d.Year == selectedYear);
   const xDim = '# of Food Insecure Persons';
   let data = prepStackData(
     yearData.sort((a, b) => (a[xDim] > b[xDim] ? 1 : -1)),
@@ -645,7 +639,7 @@ function stackedBar(
     .attr('x', plotWidth / 2)
     .attr('y', margin.top * 2)
     .attr('font-size', '18px')
-    .text('Total Food Insecure Persons by State');
+    .text('Total Food Insecure Persons by State (' + selectedYear + ')');
 
   svg
     .append('g')
