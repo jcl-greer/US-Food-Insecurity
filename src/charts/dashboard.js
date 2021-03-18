@@ -6,7 +6,7 @@ import {format} from 'd3-format';
 import {scaleQuantize} from 'd3-scale';
 import {transition} from 'd3-transition';
 import {schemeBlues} from 'd3-scale-chromatic';
-import {geoPath, geoAlbersUsa} from 'd3-geo';
+import {geoPath, geoIdentity} from 'd3-geo';
 import * as topojson from 'topojson-client';
 import {legendColor} from 'd3-svg-legend';
 
@@ -111,12 +111,13 @@ export default function(us, insecure) {
 
 // CONSTRUCTS THE STATE LEVEL MAP
 function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
-  const height = 650;
-  const width = 1000;
+  const height = 600;
+  const width = 850;
   const margin = {left: 10, top: 10, bottom: 10, right: 20};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
-  // let projection = geoAlbersUsa();
+
+  let offset = [width / 12, margin.top * 3];
 
   const colorDim = 'Food Insecurity Rate';
 
@@ -130,11 +131,19 @@ function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
     .domain(extent(insecure, d => d[colorDim]))
     .range(schemeBlues[5]);
 
-  let path = geoPath();
+  // let path = geoPath();
 
   let states = (states = new Map(
     us.objects.states.geometries.map(d => [d.id, d.properties]),
   ));
+  let feature = topojson.feature(us, us.objects.states);
+
+  let projection = geoIdentity()
+    .fitSize([height * 1.25, width * 1.25], feature)
+    .translate(offset);
+  console.log('THE PROJECTION IS ', projection);
+
+  let path = geoPath().projection(projection);
 
   const svg = select('#slide-content #map-budget #map')
     .append('svg')
@@ -148,7 +157,7 @@ function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
     .append('g')
     .attr('id', 'map')
     .selectAll('path')
-    .data(topojson.feature(us, us.objects.states).features)
+    .data(feature.features)
     .join('path')
     .attr('class', 'state')
     .attr('fill', d => color(data[d.id]))
@@ -201,25 +210,33 @@ function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
   const tooltip = svg.append('g');
   svg
     .selectAll('.state')
-    .on('touchmove mousemove', function(event, d) {
-      tooltip.call(
-        callout,
-        `${d.properties.name}
+    .on(
+      'touchmove mousemove',
+      function(event, d) {
+        tooltip.call(
+          callout,
+          `${d.properties.name}
         ${colorDim} ${(100 * data[d.id]).toFixed(2) + '%'}`,
-      );
-      tooltip
-        .attr('transform', `translate(${pointer(event)})`)
-        .select('#map')
-        .attr('font-size', '12px')
-        .raise();
-    })
-    .on('touchend mouseleave', function() {
-      tooltip
-        .call(callout, null)
-        .select('#map')
-        .attr('stroke', null)
-        .lower();
-    });
+        );
+        tooltip
+          .attr('transform', `translate(${pointer(event)})`)
+          .select('#map')
+          .attr('font-size', '12px')
+          .raise();
+      },
+      {passive: true},
+    )
+    .on(
+      'touchend mouseleave',
+      function() {
+        tooltip
+          .call(callout, null)
+          .select('#map')
+          .attr('stroke', null)
+          .lower();
+      },
+      {passive: true},
+    );
 
   svg
     .append('g')
@@ -247,8 +264,6 @@ function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
     .titleWidth(200);
 
   svg.select('.legendQuant').call(colorLegend);
-
-  select('svg').attr('transform', 'scale(.75)');
 }
 
 // CONSTRUCTS THE BUDGET SCATTERPLOT
@@ -410,26 +425,34 @@ function scatter(
   const tooltip = svg.append('g');
   svg
     .selectAll('.budget-scatter')
-    .on('touchmove mousemove', function(event, d) {
-      tooltip.call(
-        callout,
-        `${'State: ' + d.State}
+    .on(
+      'touchmove mousemove',
+      function(event, d) {
+        tooltip.call(
+          callout,
+          `${'State: ' + d.State}
               ${'Budget Shortfall: ' + form(d[xDim])}
               ${'Shortfall per 100k: ' + form(d[yDim])}`,
-      );
-      tooltip
-        .attr('transform', `translate(${pointer(event)})`)
-        .select('.budget-scatter')
-        .attr('font-size', '11px')
-        .raise();
-    })
-    .on('touchend mouseleave', function() {
-      tooltip
-        .call(callout, null)
-        .select('.budget-scatter')
-        .attr('stroke', null)
-        .lower();
-    });
+        );
+        tooltip
+          .attr('transform', `translate(${pointer(event)})`)
+          .select('.budget-scatter')
+          .attr('font-size', '11px')
+          .raise();
+      },
+      {passive: true},
+    )
+    .on(
+      'touchend mouseleave',
+      function() {
+        tooltip
+          .call(callout, null)
+          .select('.budget-scatter')
+          .attr('stroke', null)
+          .lower();
+      },
+      {passive: true},
+    );
 }
 
 // util function for configuring data for stacked bar
@@ -545,25 +568,33 @@ function stackedBar(
   const tooltip = svg.append('g');
   svg
     .selectAll('.stacked-bar')
-    .on('touchmove mousemove', function(event, d) {
-      tooltip.call(
-        callout,
-        `${'State: ' + d.state}
+    .on(
+      'touchmove mousemove',
+      function(event, d) {
+        tooltip.call(
+          callout,
+          `${'State: ' + d.state}
           ${'Total Food Insecure Population: ' + form(d.rawValue)}`,
-      );
-      tooltip
-        .attr('transform', `translate(${pointer(event)})`)
-        .select('#stacked-bar')
-        .attr('font-size', '12px')
-        .raise();
-    })
-    .on('touchend mouseleave', function() {
-      tooltip
-        .call(callout, null)
-        .select('#stacked-bar')
-        .attr('stroke', null)
-        .lower();
-    });
+        );
+        tooltip
+          .attr('transform', `translate(${pointer(event)})`)
+          .select('#stacked-bar')
+          .attr('font-size', '12px')
+          .raise();
+      },
+      {passive: true},
+    )
+    .on(
+      'touchend mouseleave',
+      function() {
+        tooltip
+          .call(callout, null)
+          .select('#stacked-bar')
+          .attr('stroke', null)
+          .lower();
+      },
+      {passive: true},
+    );
 
   // highlights if hovering over other chart
   if (marker !== null) {
