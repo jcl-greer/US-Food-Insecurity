@@ -75,7 +75,6 @@ function main(geo, insecure, covid) {
 
   const header = select('#slide-detail h2');
   const body = select('#slide-detail p');
-  const detail = select('#slide-detail');
   const credits = select('#credits');
 
   select('#prev').on('click', () =>

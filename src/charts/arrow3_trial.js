@@ -164,7 +164,7 @@ export default function(data) {
     .attr('fill', '#aec7e8');
 
   svg
-    .selectAll('.red-triangle')
+    .selectAll('.triangle')
     .append('g')
     .data(data)
     .join(enter =>
@@ -237,10 +237,10 @@ export default function(data) {
   // Legends and Titles
   svg
     .append('rect')
-    .attr('class', 'triangle')
-    .attr('x', plotWidth / 6)
+    .attr('class', 'rect')
+    .attr('x', plotWidth / 5.8)
     .attr('y', plotHeight / 25)
-    .attr('width', 9)
+    .attr('width', 4)
     .attr('height', 9)
     .attr('fill', '#1f77b4');
 
@@ -251,16 +251,22 @@ export default function(data) {
     .attr('y', plotHeight / 15)
     .attr('width', 9)
     .attr('height', 9)
+    .attr('rx', 100)
+    .attr('ry', 100)
     .attr('fill', '#aec7e8');
 
-  // '#1f77b4'
   svg
-    .append('rect')
-    .attr('class', 'red-triangle')
-    .attr('x', plotWidth / 6)
-    .attr('y', plotHeight / 10.75)
-    .attr('width', 9)
-    .attr('height', 9)
+    .append('path')
+    .attr('class', 'triangle')
+    .attr(
+      'd',
+      symbol()
+        .type(symbolTriangle)
+        .size(35),
+    )
+    .attr('transform', function(d) {
+      return 'translate(' + '82,' + '52' + ') rotate(330)';
+    })
     .attr('fill', '#923124');
 
   svg

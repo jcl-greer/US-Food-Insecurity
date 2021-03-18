@@ -188,34 +188,41 @@ export default function(initialData) {
   // Legends and Titles
   svg
     .append('rect')
-    .attr('class', 'triangle')
-    .attr('x', plotWidth / 15)
-    .attr('y', plotHeight / 25)
+    .attr('class', 'circle')
+    .attr('x', plotWidth / 5.8)
+    .attr('y', plotHeight / 15.5)
     .attr('width', 9)
     .attr('height', 9)
+    .attr('rx', 100)
+    .attr('ry', 100)
     .attr('fill', '#1f77b4');
 
   svg
-    .append('rect')
-    .attr('class', 'circle')
-    .attr('x', plotWidth / 15)
-    .attr('y', plotHeight / 15)
-    .attr('width', 9)
-    .attr('height', 9)
+    .append('path')
+    .attr(
+      'd',
+      symbol()
+        .type(symbolTriangle)
+        .size(35),
+    )
+    .attr('transform', function(d) {
+      return 'translate(' + '86,' + '51' + ') rotate(30)';
+    })
+    .attr('class', 'triangle')
     .attr('fill', '#aec7e8');
 
   svg
     .append('text')
-    .attr('x', plotWidth / 11)
-    .attr('y', plotHeight / 12.4)
+    .attr('x', plotWidth / 5)
+    .attr('y', plotHeight / 9.75)
     .text('2018')
     .style('font-size', '14px')
     .attr('alignment-baseline', 'middle');
 
   svg
     .append('text')
-    .attr('x', plotWidth / 11)
-    .attr('y', plotHeight / 19)
+    .attr('x', plotWidth / 5)
+    .attr('y', plotHeight / 13)
     .text('2012')
     .style('font-size', '14px')
     .attr('alignment-baseline', 'middle');

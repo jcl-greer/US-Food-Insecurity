@@ -142,7 +142,7 @@ function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
   let feature = topojson.feature(us, us.objects.states);
 
   let projection = geoIdentity()
-    .fitSize([height * 1.25, width * 1.25], feature)
+    .fitSize([height * 1.2, width * 1.2], feature)
     .translate(offset);
   console.log('THE PROJECTION IS ', projection);
 
@@ -280,7 +280,7 @@ function scatter(
   let data = initialData.filter(d => d.Year == selectedYear);
 
   const height = 375;
-  const width = 465;
+  const width = 450;
   const margin = {left: 70, top: 50, bottom: 50, right: 60};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
