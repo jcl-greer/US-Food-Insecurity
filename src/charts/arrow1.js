@@ -1,11 +1,9 @@
-import {select} from 'd3-selection';
-import {csv, json} from 'd3-fetch';
-import {scaleLinear, scaleTime, scaleBand} from 'd3-scale';
-import {extent, min, max} from 'd3-array';
-import {axisBottom, axisLeft} from 'd3-axis';
+import {select, selectAll} from 'd3-selection';
+import {scaleLinear, scaleBand} from 'd3-scale';
+import {extent} from 'd3-array';
+import {axisBottom} from 'd3-axis';
 import {symbol, symbolTriangle, line} from 'd3-shape';
-import {transition, easeLinear} from 'd3-transition';
-import './main.css';
+import {transition} from 'd3-transition';
 
 // very helpful resource on transitions
 // https://observablehq.com/@d3/selection-join
@@ -13,33 +11,26 @@ import './main.css';
 // for those pesky labels
 // https://observablehq.com/@abebrath/scatterplot-of-text-labels
 
-function getUnique(data, key) {
-  return data.reduce((acc, row) => acc.add(row[key]), new Set());
-}
+export default function(initialData) {
+  if (!select('svg').empty()) {
+    selectAll('svg').remove();
+    select('#slide-content #filters div').remove();
+  }
+  let data = initialData.filter(({Year}) => 2012 && Year <= 2018);
 
-json('./data/state_covid.json')
-  .then(x => x.filter(({Year}) => 2012 && Year <= 2018))
-  .then(data => arrow1(data))
-  .catch(e => {
-    console.log(e);
-  });
-
-function arrow1(data) {
-  const height = 700;
-  const width = 700;
-  const margin = {top: 60, left: 60, right: 60, bottom: 60};
+  const height = 600;
+  const width = 550;
+  const margin = {top: 40, left: 40, right: 40, bottom: 40};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
 
   const xDim = 'Food Insecurity Rate';
   const yDim = 'State';
 
+  function getUnique(data, key) {
+    return data.reduce((acc, row) => acc.add(row[key]), new Set());
+  }
   const yDomain = getUnique(data, yDim);
-
-  // console.log(extent(data, d => d[xDim]));
-  // console.log(extent(data, d => d[yDim]));
-
-  // console.log(data, height);
 
   const xScale = scaleLinear()
     .domain(extent(data, d => d[xDim]))
@@ -53,67 +44,57 @@ function arrow1(data) {
     .x(d => xScale(d[xDim]))
     .y(d => yScale(d[yDim]));
 
-  const svg = select('.charters')
+  const svg = select('#slide-content')
     .append('svg')
     .attr('height', height)
     .attr('width', width)
     .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-  // working static circles
+  const t = transition().duration(1500);
+
   svg
     .selectAll('.circle')
     .data(data)
-    .join('circle')
+    .join(enter =>
+      enter
+        .append('circle')
+        .attr('cy', d => yScale(d[yDim]) * 0)
+        .attr('cx', d => xScale(d[xDim]) * 1.5)
+        .call(el =>
+          el
+            .transition(t)
+            .delay((d, i) => i * 1)
+            .attr('cy', d => yScale(d[yDim]))
+            .attr('cx', d => xScale(d[xDim])),
+        ),
+    )
+    .attr('class', 'circle')
     .filter(d => {
       return d.Year === 2012;
     })
-    .attr('class', 'circle')
-    .attr('cx', d => xScale(d[xDim]))
-    .attr('cy', d => yScale(d[yDim]))
-    .attr('r', 4)
+    .attr('r', 4.5)
     .attr('fill', '#1f77b4');
 
-  const t = transition().duration(1500);
-
-  // working transition circles
-  // svg
-  //   .selectAll('.circle')
-  //   .data(data)
-
-  //   .join(enter =>
-  //     enter
-  //       .append('circle')
-  //       .attr('cy', d => yScale(d[yDim]) * 0)
-  //       .attr('cx', d => xScale(d[xDim]) * 1.5)
-  //       .call(el =>
-  //         el
-  //           .transition(t)
-  //           .attr('cy', d => yScale(d[yDim]))
-  //           .attr('cx', d => xScale(d[xDim])),
-  //       ),
-  //   )
-  //   .attr('class', 'circle')
-  //   .filter(d => {
-  //     return d.Year === 2012;
-  //   })
-  //   .attr('r', 4)
-  //   .attr('fill', '#1f77b4');
-
-  // Try out delay on this after the circles appear
+  const t2 = transition().duration(3000);
   svg
     .append('g')
     .selectAll('.text')
     .data(data)
-    .join('text')
+    .join(enter =>
+      enter
+        .append('text')
+        .attr('opacity', 0)
+        .call(el => el.transition(t2).attr('opacity', 1)),
+    )
     .attr('class', 'text')
     .filter(d => {
       return d.Year === 2012;
     })
-    .attr('x', d => 5 + xScale(d[xDim]))
-    .attr('y', d => 3 + yScale(d[yDim]))
+    .attr('x', d => 8 + xScale(d[xDim]))
+    .attr('y', d => 4 + yScale(d[yDim]))
     .text(d => d[yDim])
-    .attr('font-size', '10px')
+    .attr('font-size', '10.5px')
     .attr('fill', '#1f77b4');
 
   svg
@@ -128,16 +109,18 @@ function arrow1(data) {
     .attr('class', 'circle')
     .attr('x', plotWidth / 6)
     .attr('y', plotHeight / 15)
-    .attr('width', 8)
-    .attr('height', 8)
+    .attr('width', 9)
+    .attr('height', 9)
+    .attr('rx', 100)
+    .attr('ry', 100)
     .attr('fill', '#1f77b4');
 
   svg
     .append('text')
     .attr('x', plotWidth / 5)
     .attr('y', plotHeight / 13)
-    .text('2018')
-    .style('font-size', '12px')
+    .text('2012')
+    .style('font-size', '14px')
     .attr('alignment-baseline', 'middle');
 
   svg
@@ -147,9 +130,9 @@ function arrow1(data) {
     .attr('text-anchor', 'middle')
     .attr('x', plotWidth / 2)
     .attr('y', 0 - margin.top / 2)
-    .attr('font-size', 18)
+    .attr('font-size', '18px')
     .text(
-      'State Food Insecurity Rates in 2012 Were Still High Due to the Great Recession',
+      'Food Insecurity Rates Were Still High in 2012, Due to the Great Recession',
     );
   svg
     .append('g')
@@ -159,5 +142,5 @@ function arrow1(data) {
     .attr('x', plotWidth / 2)
     .attr('y', plotHeight + 30)
     .text('Food Insecurity Rate')
-    .attr('font-size', 14);
+    .attr('font-size', '14px');
 }

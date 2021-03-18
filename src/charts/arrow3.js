@@ -1,27 +1,20 @@
-import {select} from 'd3-selection';
-import {csv, json} from 'd3-fetch';
-import {scaleLinear, scaleTime, scaleBand} from 'd3-scale';
-import {extent, min, max} from 'd3-array';
-import {axisBottom, axisLeft} from 'd3-axis';
+import {select, selectAll} from 'd3-selection';
+import {scaleLinear, scaleBand} from 'd3-scale';
+import {extent} from 'd3-array';
+import {axisBottom} from 'd3-axis';
 import {symbol, symbolTriangle, line} from 'd3-shape';
-import {transition, easeLinear} from 'd3-transition';
-import './main.css';
+import {transition} from 'd3-transition';
 
 // very helpful resource on transitions
 // https://observablehq.com/@d3/selection-join
 
-function getUnique(data, key) {
-  return data.reduce((acc, row) => acc.add(row[key]), new Set());
-}
-
-json('./data/state_covid.json')
-  .then(data => arrow3(data))
-  .catch(e => {
-    console.log(e);
-  });
-
-function arrow3(data) {
-  // my bad iterative function
+export default function(data) {
+  if (!select('svg').empty()) {
+    selectAll('svg').remove();
+    select('svg').remove();
+    select('#slide-content #filters div').remove();
+  }
+  // create data structure for lines
   function prepData(data) {
     const len = data.length;
     let fullArr = [];
@@ -40,9 +33,13 @@ function arrow3(data) {
     return fullArr;
   }
 
-  const height = 700;
-  const width = 700;
-  const margin = {top: 60, left: 60, right: 60, bottom: 60};
+  function getUnique(data, key) {
+    return data.reduce((acc, row) => acc.add(row[key]), new Set());
+  }
+
+  const height = 600;
+  const width = 550;
+  const margin = {top: 40, left: 40, right: 40, bottom: 40};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
 
@@ -50,8 +47,6 @@ function arrow3(data) {
   const yDim = 'State';
 
   const yDomain = getUnique(data, yDim);
-
-  console.log(data, height);
 
   const xScale = scaleLinear()
     .domain(extent(data, d => d[xDim]))
@@ -65,16 +60,14 @@ function arrow3(data) {
     .x(d => xScale(d[xDim]))
     .y(d => yScale(d[yDim]));
 
-  const svg = select('.charters')
+  const svg = select('#slide-content')
     .append('svg')
     .attr('height', height)
     .attr('width', width)
     .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-  // [[{year: 2018}, {year: 2012, state: "WA"}], ...]
   const preppedData = prepData(data);
-  const t3 = transition().duration(1000);
 
   let lines = svg
     .selectAll('.line-between')
@@ -88,17 +81,13 @@ function arrow3(data) {
 
   lines
     .attr('stroke-dashoffset', function(d) {
-      // Get the path length of the current element
       const pathLength = this.getTotalLength();
-      // console.log(' the path length is ', pathLength);
-      return `${-pathLength}`;
+      return `${pathLength}`;
     })
 
     .attr('stroke-dasharray', function(d) {
-      // Get the path length of the current element
       const pathLength = this.getTotalLength();
-      // console.log(' the path length is ', pathLength);
-      return `${2 * pathLength}`;
+      return `${pathLength}`;
     })
     .transition()
     .delay((d, i) => i * 3)
@@ -107,6 +96,7 @@ function arrow3(data) {
     .attr('stroke-dashoffset', 0);
 
   const t = transition().duration(1600);
+  const t1 = transition().duration(600);
 
   svg
     .selectAll('.rect')
@@ -114,18 +104,44 @@ function arrow3(data) {
     .join(enter =>
       enter
         .append('rect')
+        .attr('rx', 100)
+        .attr('ry', 100)
+        .attr('x', d => xScale(d[xDim]) - 5)
         .attr('y', d => yScale(d[yDim]) - 5)
-        .attr('x', d => xScale(d[xDim]))
-        .attr('opacity', 0)
-        .call(el => el.transition(t).attr('opacity', 0.65)),
+        .attr('class', 'rect')
+        .attr('opacity', d => {
+          if (d.Year === 2012) {
+            return 1;
+          } else {
+            return 0;
+          }
+        })
+        .attr('width', 9)
+        .attr('height', 9)
+        .call(el =>
+          el
+            .transition(t)
+            .attr('rx', 0)
+            .attr('ry', 0)
+            .attr('class', 'rect')
+            .attr('opacity', d => {
+              if (d.Year === 2012) {
+                return 0.75;
+              } else {
+                return 0;
+              }
+            })
+            .attr('x', d => xScale(d[xDim]) - 1.5)
+            .attr('y', d => yScale(d[yDim]) - 4.5)
+            .attr('width', 3)
+            .attr('height', 9),
+        ),
     )
-    .attr('class', 'rect')
+
     .filter(d => {
       return d.Year === 2012;
     })
-    // .attr('r', 4)
-    .attr('width', 4)
-    .attr('height', 10)
+
     .attr('fill', '#1f77b4');
 
   svg
@@ -138,16 +154,17 @@ function arrow3(data) {
         .attr('cy', d => yScale(d[yDim]))
         .attr('cx', d => xScale(d[xDim]))
         .attr('opacity', 0)
-        .call(el => el.transition(t).attr('opacity', 1)),
+        .call(el => el.transition(t1).attr('opacity', 1)),
     )
     .attr('class', 'circle')
     .filter(d => {
       return d.Year === 2018;
     })
-    .attr('r', 4)
+    .attr('r', 4.5)
     .attr('fill', '#aec7e8');
+
   svg
-    .selectAll('.red-triangle')
+    .selectAll('.triangle')
     .append('g')
     .data(data)
     .join(enter =>
@@ -189,8 +206,6 @@ function arrow3(data) {
     )
     .attr('fill', '#923124');
 
-  // huh huh huh
-
   const t2 = transition().duration(3000);
   svg
     .append('g')
@@ -206,11 +221,12 @@ function arrow3(data) {
     .filter(d => {
       return d.Year === 2018;
     })
-    .attr('x', d => -22 + xScale(d[xDim]))
+    .attr('x', d => -25 + xScale(d[xDim]))
     .attr('y', d => 3 + yScale(d[yDim]))
     .text(d => d[yDim])
-    .attr('font-size', '10.5px')
-    .attr('fill', '#aec7e8');
+    .attr('font-size', '11px')
+    .attr('fill', '#aec7e8')
+    .attr('font-weight', '500');
 
   svg
     .append('g')
@@ -221,28 +237,36 @@ function arrow3(data) {
   // Legends and Titles
   svg
     .append('rect')
-    .attr('class', 'triangle')
-    .attr('x', plotWidth / 6)
+    .attr('class', 'rect')
+    .attr('x', plotWidth / 5.8)
     .attr('y', plotHeight / 25)
-    .attr('width', 8)
-    .attr('height', 8)
-    .attr('fill', '#aec7e8');
+    .attr('width', 4)
+    .attr('height', 9)
+    .attr('fill', '#1f77b4');
 
   svg
     .append('rect')
     .attr('class', 'circle')
     .attr('x', plotWidth / 6)
     .attr('y', plotHeight / 15)
-    .attr('width', 8)
-    .attr('height', 8)
-    .attr('fill', '#1f77b4');
+    .attr('width', 9)
+    .attr('height', 9)
+    .attr('rx', 100)
+    .attr('ry', 100)
+    .attr('fill', '#aec7e8');
+
   svg
-    .append('rect')
-    .attr('class', 'red-triangle')
-    .attr('x', plotWidth / 6)
-    .attr('y', plotHeight / 10.75)
-    .attr('width', 8)
-    .attr('height', 8)
+    .append('path')
+    .attr('class', 'triangle')
+    .attr(
+      'd',
+      symbol()
+        .type(symbolTriangle)
+        .size(35),
+    )
+    .attr('transform', function(d) {
+      return 'translate(' + '82,' + '52' + ') rotate(330)';
+    })
     .attr('fill', '#923124');
 
   svg
@@ -250,7 +274,7 @@ function arrow3(data) {
     .attr('x', plotWidth / 5)
     .attr('y', plotHeight / 9.75)
     .text('2020')
-    .style('font-size', '12px')
+    .style('font-size', '14px')
     .attr('alignment-baseline', 'middle');
 
   svg
@@ -258,7 +282,7 @@ function arrow3(data) {
     .attr('x', plotWidth / 5)
     .attr('y', plotHeight / 13)
     .text('2018')
-    .style('font-size', '12px')
+    .style('font-size', '14px')
     .attr('alignment-baseline', 'middle');
 
   svg
@@ -266,7 +290,7 @@ function arrow3(data) {
     .attr('x', plotWidth / 5)
     .attr('y', plotHeight / 20)
     .text('2012')
-    .style('font-size', '12px')
+    .style('font-size', '14px')
     .attr('alignment-baseline', 'middle');
 
   svg
@@ -276,9 +300,9 @@ function arrow3(data) {
     .attr('text-anchor', 'middle')
     .attr('x', plotWidth / 2)
     .attr('y', 0 - margin.top / 2)
-    .attr('font-size', 18)
+    .attr('font-size', 17)
     .text(
-      'Due to COVID-19, Estimated 2020 State Insecurity Rates Exceed 2012 Rates in Many States',
+      'Estimated 2020 Food Insecurity Rates Exceed 2012 Rates in Many States',
     );
   svg
     .append('g')

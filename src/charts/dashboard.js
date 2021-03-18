@@ -4,7 +4,6 @@ import {extent, min, max, sum} from 'd3-array';
 import {axisBottom, axisLeft} from 'd3-axis';
 import {format} from 'd3-format';
 import {scaleQuantize} from 'd3-scale';
-import {transition} from 'd3-transition';
 import {schemeBlues} from 'd3-scale-chromatic';
 import {geoPath, geoIdentity} from 'd3-geo';
 import * as topojson from 'topojson-client';
@@ -134,8 +133,6 @@ function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
     .domain(extent(insecure, d => d[colorDim]))
     .range(schemeBlues[5]);
 
-  // let path = geoPath();
-
   let states = (states = new Map(
     us.objects.states.geometries.map(d => [d.id, d.properties]),
   ));
@@ -245,7 +242,6 @@ function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
     .append('g')
     .append('text')
     .attr('class', 'title')
-    // .attr('text-anchor', 'middle')
     .attr('x', margin.left)
     .attr('y', margin.top * 2)
     .attr('font-size', '20px')

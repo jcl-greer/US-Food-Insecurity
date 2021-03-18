@@ -1,11 +1,9 @@
 import {select} from 'd3-selection';
 import {json} from 'd3-fetch';
-
 import './main.css';
-
-import arrow1 from './charts/arrow1_trial';
-import arrow2 from './charts/arrow2_trial';
-import arrow3 from './charts/arrow3_trial';
+import arrow1 from './charts/arrow1';
+import arrow2 from './charts/arrow2';
+import arrow3 from './charts/arrow3';
 import dash from './charts/dashboard';
 
 Promise.all([
