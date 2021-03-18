@@ -139,7 +139,7 @@ function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
   let feature = topojson.feature(us, us.objects.states);
 
   let projection = geoIdentity()
-    .fitSize([height * 1.33, width * 1.33], feature)
+    .fitSize([height * 1.25, width * 1.25], feature)
     .translate(offset);
   console.log('THE PROJECTION IS ', projection);
 
