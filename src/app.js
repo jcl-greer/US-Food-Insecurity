@@ -76,6 +76,7 @@ function main(geo, insecure, covid) {
   const header = select('#slide-detail h2');
   const body = select('#slide-detail p');
   const detail = select('#slide-detail');
+  const credits = select('#credits');
 
   select('#prev').on('click', () =>
     updateState(currentSlideIdx ? currentSlideIdx - 1 : slides.length - 1),
@@ -103,11 +104,9 @@ function main(geo, insecure, covid) {
     header.text(currentSlide.title);
     body.text(currentSlide.content);
     if (currentSlideIdx === 3) {
-      // detail.style('min-width', '125px');
-      // detail.style('width', '125px');
+      credits.style('display', 'inline-block');
     } else {
-      // detail.style('min-width', '350px');
-      // detail.style('width', '350px');
+      credits.style('display', 'none');
     }
 
     currentSlide.render(slideData[currentSlideIdx]);

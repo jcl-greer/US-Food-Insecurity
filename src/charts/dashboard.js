@@ -16,6 +16,9 @@ import {legendColor} from 'd3-svg-legend';
 // this for the map
 // https://observablehq.com/@d3/state-choropleth
 
+// This for understanding projections and scaling down
+// https://stackoverflow.com/questions/42430361/scaling-d3-v4-map-to-fit-svg-or-at-all
+
 export default function(us, insecure) {
   if (!select('svg').empty()) {
     select('svg').remove();
@@ -27,7 +30,7 @@ export default function(us, insecure) {
 
     g.style('display', null)
       .style('pointer-events', 'none')
-      .style('font', '11px Gill Sans MT');
+      .style('font', 'Gill Sans MT');
 
     const path = g
       .selectAll('path')

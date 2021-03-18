@@ -113,6 +113,8 @@ export default function(initialData) {
     .attr('y', plotHeight / 15)
     .attr('width', 9)
     .attr('height', 9)
+    .attr('rx', 100)
+    .attr('ry', 100)
     .attr('fill', '#1f77b4');
 
   svg
