@@ -103,11 +103,11 @@ function main(geo, insecure, covid) {
     header.text(currentSlide.title);
     body.text(currentSlide.content);
     if (currentSlideIdx === 3) {
-      detail.style('min-width', '125px');
-      detail.style('width', '125px');
+      // detail.style('min-width', '125px');
+      // detail.style('width', '125px');
     } else {
-      detail.style('min-width', '350px');
-      detail.style('width', '350px');
+      // detail.style('min-width', '350px');
+      // detail.style('width', '350px');
     }
 
     currentSlide.render(slideData[currentSlideIdx]);

@@ -112,12 +112,12 @@ export default function(us, insecure) {
 // CONSTRUCTS THE STATE LEVEL MAP
 function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
   const height = 600;
-  const width = 850;
+  const width = 800;
   const margin = {left: 10, top: 10, bottom: 10, right: 20};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
 
-  let offset = [width / 12, margin.top * 3];
+  let offset = [margin.left * 2, margin.top * 3];
 
   const colorDim = 'Food Insecurity Rate';
 
@@ -139,7 +139,7 @@ function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
   let feature = topojson.feature(us, us.objects.states);
 
   let projection = geoIdentity()
-    .fitSize([height * 1.25, width * 1.25], feature)
+    .fitSize([height * 1.33, width * 1.33], feature)
     .translate(offset);
   console.log('THE PROJECTION IS ', projection);
 
@@ -242,26 +242,25 @@ function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
     .append('g')
     .append('text')
     .attr('class', 'title')
-    .attr('text-anchor', 'middle')
-    .attr('x', plotWidth / 2.65)
+    // .attr('text-anchor', 'middle')
+    .attr('x', margin.left)
     .attr('y', margin.top * 2)
-    .attr('font-size', '22px')
+    .attr('font-size', '20px')
     .style('font-weight', 'bold')
     .text(selectedYear + ' Food Insecurity Rates by State');
 
   svg
     .append('g')
     .attr('class', 'legendQuant')
-    .attr('font-size', '11.5px')
+    .attr('font-size', '11px')
     .attr('transform', `translate(${plotWidth - margin.right * 20}, 1)`);
 
   let colorLegend = legendColor()
     .labelFormat(format('.1%'))
     .scale(color)
-    .shapeHeight(20)
+    .shapeHeight(15)
     .shapeWidth(70)
-    .orient('horizontal')
-    .titleWidth(200);
+    .orient('horizontal');
 
   svg.select('.legendQuant').call(colorLegend);
 }
@@ -277,9 +276,9 @@ function scatter(
 ) {
   let data = initialData.filter(d => d.Year == selectedYear);
 
-  const height = 350;
-  const width = 425;
-  const margin = {left: 65, top: 50, bottom: 50, right: 20};
+  const height = 375;
+  const width = 465;
+  const margin = {left: 70, top: 50, bottom: 50, right: 60};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
 
@@ -362,8 +361,8 @@ function scatter(
   svg
     .append('g')
     .attr('class', 'legendQuant')
-    .attr('font-size', '10.5px')
-    .attr('transform', `translate(${plotWidth - margin.right * 4}, -10)`);
+    .attr('font-size', '11px')
+    .attr('transform', `translate(${plotWidth - margin.right * 1.5}, -10)`);
 
   let colorLegend = legendColor()
     .labelFormat(format('.1%'))
@@ -371,7 +370,7 @@ function scatter(
     .shapeHeight(10)
     .shapeWidth(10)
     .title('% of Food Insecure in Areas with High Meal Costs')
-    .titleWidth(110);
+    .titleWidth(140);
 
   svg.select('.legendQuant').call(colorLegend);
 

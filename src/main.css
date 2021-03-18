@@ -41,11 +41,12 @@ body {
 }
 
 #slide-detail {
-  flex-shrink: 2;
+  flex-shrink: 3;
   display: flex;
   justify-content: start;
-  width: 300px;
-  min-width: 300px;
+  /* width: 300px;
+  min-width: 300px; */
+  max-width: 350px;
   border-right: thin solid black;
   height: 700px;
   padding: 10px;
@@ -105,5 +106,19 @@ body {
 
 
 
+/* media rules for smaller screens*/
+@media only screen and (max-width: 1000px) {
 
+  #slide-detail {
+    max-width: 800px;
+    height: 300px;
+  }
 
+  #main-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+
+}
