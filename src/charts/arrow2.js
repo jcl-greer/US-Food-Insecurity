@@ -4,7 +4,7 @@ import {extent} from 'd3-array';
 import {axisBottom} from 'd3-axis';
 import {symbol, symbolTriangle, line} from 'd3-shape';
 import {transition} from 'd3-transition';
-import {interpolatePath} from 'd3-interpolate-path';
+import {easeLinear, easeBackOut} from 'd3-ease';
 
 export default function(initialData) {
   if (!select('svg').empty()) {
@@ -28,7 +28,6 @@ export default function(initialData) {
         }
       }
     }
-    console.log('the full arr is ', fullArr);
 
     return fullArr;
   }
@@ -68,7 +67,6 @@ export default function(initialData) {
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
   const preppedData = prepData(data);
-  const t3 = transition().duration(1000);
 
   let lines = svg
     .selectAll('.line-between')
@@ -80,20 +78,27 @@ export default function(initialData) {
     .attr('stroke-width', '2')
     .attr('fill', 'none');
 
+  // make the lines draw in one direction, somehow
   lines
     .attr('stroke-dashoffset', function(d) {
-      const pathLength = this.getTotalLength();
-      return `${pathLength}`;
+      if (d[0].Year === 2012) {
+        const pathLength = this.getTotalLength();
+        return `${pathLength}`;
+      } else {
+        const pathLength = this.getTotalLength();
+        return `${-pathLength}`;
+      }
     })
 
     .attr('stroke-dasharray', function(d) {
       const pathLength = this.getTotalLength();
-      return `${pathLength}`;
+      return `${pathLength + ' ' + pathLength}`;
     })
     .transition()
-    .delay((d, i) => i * 7)
+    .delay((d, i) => i * 3)
+    .ease(easeLinear)
     .style('opacity', 1)
-    .duration(2200)
+    .duration(1700)
     .attr('stroke-dashoffset', 0);
 
   // secret circle rect
@@ -113,7 +118,7 @@ export default function(initialData) {
     .attr('height', 9)
     .attr('fill', '#1f77b4');
 
-  const t = transition().duration(1600);
+  const t = transition().duration(1700);
   svg
     .selectAll('.triangle')
     .append('g')
@@ -133,7 +138,8 @@ export default function(initialData) {
         .call(el =>
           el
             .transition(t)
-            .delay((d, i) => i * 5)
+            .ease(easeBackOut.overshoot(0.25))
+            .delay((d, i) => i * 3)
             .attr('transform', function(d) {
               return (
                 'translate(' +

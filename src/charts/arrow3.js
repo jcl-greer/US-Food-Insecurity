@@ -4,6 +4,7 @@ import {extent} from 'd3-array';
 import {axisBottom} from 'd3-axis';
 import {symbol, symbolTriangle, line} from 'd3-shape';
 import {transition} from 'd3-transition';
+import {easeBackOut} from 'd3-ease';
 
 export default function(data) {
   if (!select('svg').empty()) {
@@ -64,11 +65,12 @@ export default function(data) {
     .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-  const preppedData = prepData(data);
+  const lineData = data.filter(({Year}) => Year === 2018 || Year === 2020);
+  const preppedLine = prepData(lineData);
 
   let lines = svg
     .selectAll('.line-between')
-    .data(preppedData)
+    .data(preppedLine)
     .join('path')
     .attr('class', 'line-between')
     .attr('d', d => lineScale(d))
@@ -78,13 +80,21 @@ export default function(data) {
 
   lines
     .attr('stroke-dashoffset', function(d) {
-      const pathLength = this.getTotalLength();
-      return `${pathLength}`;
+      if (d[0].Year === 2018) {
+        const pathLength = this.getTotalLength();
+        return `${pathLength}`;
+      } else if (d[0].Year === 2020) {
+        const pathLength = this.getTotalLength();
+        return `${-pathLength}`;
+      } else {
+        const pathLength = this.getTotalLength();
+        return `${-pathLength}`;
+      }
     })
 
     .attr('stroke-dasharray', function(d) {
       const pathLength = this.getTotalLength();
-      return `${pathLength}`;
+      return `${pathLength + ' ' + pathLength}`;
     })
     .transition()
     .delay((d, i) => i * 3)
@@ -179,6 +189,7 @@ export default function(data) {
         .call(el =>
           el
             .transition(t)
+            .ease(easeBackOut.overshoot(0.25))
             .delay((d, i) => i * 4)
             .attr('transform', function(d) {
               return (

@@ -2,7 +2,7 @@ import {select, selectAll} from 'd3-selection';
 import {scaleLinear, scaleBand} from 'd3-scale';
 import {extent} from 'd3-array';
 import {axisBottom} from 'd3-axis';
-import {symbol, symbolTriangle, line} from 'd3-shape';
+import {line} from 'd3-shape';
 import {transition} from 'd3-transition';
 
 export default function(initialData) {
@@ -53,8 +53,10 @@ export default function(initialData) {
     .join(enter =>
       enter
         .append('circle')
-        .attr('cy', d => yScale(d[yDim]) * 0)
-        .attr('cx', d => xScale(d[xDim]) * 1.5)
+        // .attr('cy', d => yScale(d[yDim]) * 0)
+        .attr('cy', d => 0)
+        // .attr('cx', d => xScale(d[xDim]) * 1.5)
+        .attr('cx', d => 0)
         .call(el =>
           el
             .transition(t)

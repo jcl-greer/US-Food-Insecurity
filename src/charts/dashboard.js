@@ -129,10 +129,10 @@ function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
   ));
   let feature = topojson.feature(us, us.objects.states);
 
+  // create null projection for scaling down the map
   let projection = geoIdentity()
     .fitSize([height * 1.2, width * 1.2], feature)
     .translate(offset);
-  console.log('THE PROJECTION IS ', projection);
 
   let path = geoPath().projection(projection);
 
@@ -141,7 +141,7 @@ function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
     .attr('height', height)
     .attr('width', width)
     .append('g')
-    .attr('viewBox', [10, 10, 900, 530])
+    // .attr('viewBox', [10, 10, 900, 530])
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
   svg
@@ -267,7 +267,7 @@ function scatter(
   let data = initialData.filter(d => d.Year == selectedYear);
 
   const height = 375;
-  const width = 450;
+  const width = 460;
   const margin = {left: 70, top: 50, bottom: 50, right: 60};
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
@@ -613,7 +613,9 @@ function stackedBar(
     .attr('y', margin.top * 2)
     .attr('font-size', '18px')
     .text(
-      'Share of Total Food Insecure Population by State (' + selectedYear + ')',
+      'Share of National Food Insecure Population by State (' +
+        selectedYear +
+        ')',
     );
 
   svg

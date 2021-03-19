@@ -23,7 +23,7 @@ const slides = [
   {
     title: 'Food Insecurity Rates Were High After The Great Recession',
     content:
-      'Millions of people across the United States (approximately 1 in 9) suffer with food insecurity, meaning they lack regular access to adequate food. This project examines the trends in domestic food insecurity at the state level, from 2012 to 2020. The food insecurity crisis ballooned following the Great Recession, as higher unemployment rates and declines in median household incomes led to higher rates of household poverty. The United States was still in the midst of recovering from the Recession in 2012, and national food insecurity rates were far above pre-Recession levels. Among states, there was a high degree of variation in rates. Southeastern states such as Mississippi, Arkansas, and Georgia suffered from food insecurity rates as high as ~22%, while the national statewide average was about 15%.',
+      'Millions of people across the United States (approximately 1 in 9) suffer with food insecurity, meaning they lack regular access to adequate food. This project examines the trends in domestic food insecurity at the state level, from 2012 to 2020. The food insecurity crisis ballooned following the Great Recession, as higher unemployment rates and declines in median household incomes led to higher rates of household poverty. The United States was still in the midst of recovering from the Recession in 2012, and national food insecurity rates were far above pre-Recession levels. Southeastern states such as Mississippi, Arkansas, and Georgia suffered from food insecurity rates as high as ~22%, while the national statewide average was about 15%.',
     render: data => {
       arrow1(data);
     },
@@ -41,7 +41,7 @@ const slides = [
   {
     title: 'But The Estimated Impact of COVID-19 Has Reversed Those Declines',
     content:
-      'The emergence of the COVID-19 pandemic has drastically reduced the ability of Americans to obtain essential needs like shelter and food, and it has likely exacerbated existing health disparities. While significant gains were made in reducing food insecurity in the decade following the Great Recession, these improvements have been threatened by the widespread economic and public health downturn resulting from the pandemic. Unemployment and poverty rates are two of the most significant indicators (per Feeding America), and the critical loss of income and jobs during the pandemic means that many more households are struggling to access adequate, healthy food.  Using estimated changes in unemployment and poverty adjusted based on actual rates at the start of the pandemic, Feeding America’s Map the Meal Gap study projects that food insecurity rates rose significantly across all states in 2020.  In most states, projected 2020 rates are higher than 2012 rates, which emphasizes the need to implement stronger policies at the state and federal level to combat food insecurity. ',
+      'The emergence of the COVID-19 pandemic has drastically reduced the ability of Americans to obtain essential needs like shelter and food, and it has likely exacerbated existing health disparities. While significant gains were made in reducing food insecurity following the Great Recession, these improvements have been threatened by the widespread economic and public health downturn resulting from the pandemic.  Using estimated changes in unemployment and poverty adjusted based on actual rates at the start of the pandemic, Feeding America’s Map the Meal Gap study projects that food insecurity rates rose significantly across all states in 2020.  In most states, projected 2020 rates are higher than 2012 rates, which emphasizes the need to implement stronger policies at the state and federal level to combat food insecurity.',
     render: data => {
       arrow3(data);
     },
@@ -49,7 +49,7 @@ const slides = [
   {
     title: 'Explore the Dashboard',
     content:
-      'The dashboard contains food insecurity data from 2013 - 2018. In addition to food insecurity rates, it also includes the total food insecure population and accumulated food budget shortfalls per state. The Current Population Survey, which is administered by the Census Bureau, makes an effort to measure the budget shortfall of households suffering from food security. This budget shortfall measure represents the amount of additional money a food insecure person would likely spend to meet their food nutrition needs. Here, this figure is aggregated to the state level. High Meal Costs are defined as above the 75% percentile among meal costs at the county level.',
+      'The dashboard contains food insecurity data from 2013 - 2018. In addition to food insecurity rates, it also includes the total food insecure population and accumulated food budget shortfalls per state. The Current Population Survey, which is administered by the Census Bureau, makes an effort to measure the budget shortfall of households suffering from food security. This budget shortfall measure represents the amount of additional money a food insecure person would need to spend to meet their food nutrition needs. Here, this figure is aggregated to the state level. High meal costs are defined as above the 75% percentile among meal costs at the county level.',
     render: data => {
       dash(data[0], data[1]);
     },
@@ -84,7 +84,6 @@ function main(geo, insecure, covid) {
 
   function drawProgress() {
     const numData = [...new Array(slides.length)].map((_, idx) => idx);
-    console.log(numData);
     select('#progress')
       .selectAll('.progress-dot')
       .data(numData)
@@ -103,7 +102,6 @@ function main(geo, insecure, covid) {
 
   // draw loop
   function renderSlide() {
-    console.log('the current slide idx is ', currentSlideIdx);
     const currentSlide = slides[currentSlideIdx];
     header.text(currentSlide.title);
     body.text(currentSlide.content);
