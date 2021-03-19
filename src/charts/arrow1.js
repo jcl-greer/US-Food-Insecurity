@@ -5,12 +5,6 @@ import {axisBottom} from 'd3-axis';
 import {symbol, symbolTriangle, line} from 'd3-shape';
 import {transition} from 'd3-transition';
 
-// very helpful resource on transitions
-// https://observablehq.com/@d3/selection-join
-
-// for those pesky labels
-// https://observablehq.com/@abebrath/scatterplot-of-text-labels
-
 export default function(initialData) {
   if (!select('svg').empty()) {
     selectAll('svg').remove();

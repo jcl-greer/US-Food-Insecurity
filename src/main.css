@@ -103,7 +103,6 @@ body {
   min-width: 100px;
 }
 
-
 /* media rules for those smaller screens*/
 @media only screen and (max-width: 1200px) {
 

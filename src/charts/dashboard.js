@@ -9,15 +9,6 @@ import {geoPath, geoIdentity} from 'd3-geo';
 import * as topojson from 'topojson-client';
 import {legendColor} from 'd3-svg-legend';
 
-// this for the tooltip
-// https://bl.ocks.org/d3noob/180287b6623496dbb5ac4b048813af52
-
-// this for the map
-// https://observablehq.com/@d3/state-choropleth
-
-// This for understanding projections and scaling down
-// https://stackoverflow.com/questions/42430361/scaling-d3-v4-map-to-fit-svg-or-at-all
-
 export default function(us, insecure) {
   if (!select('svg').empty()) {
     select('svg').remove();

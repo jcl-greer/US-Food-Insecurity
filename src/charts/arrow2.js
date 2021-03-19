@@ -6,12 +6,6 @@ import {symbol, symbolTriangle, line} from 'd3-shape';
 import {transition} from 'd3-transition';
 import {interpolatePath} from 'd3-interpolate-path';
 
-// very helpful resource on transitions
-// https://observablehq.com/@d3/selection-join
-
-// helpful for potential shape changes
-// https://stackoverflow.com/questions/17437408/how-to-change-a-circle-into-a-square-with-d3-js
-
 export default function(initialData) {
   if (!select('svg').empty()) {
     selectAll('svg').remove();
