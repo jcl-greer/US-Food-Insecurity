@@ -49,7 +49,7 @@ const slides = [
   {
     title: 'Explore the Dashboard',
     content:
-      'The dashboard contains food insecurity data from 2013 - 2018. In addition to food insecurity rates, it also includes the number of food insecure and accumulated food budget shortfalls per state.',
+      'The dashboard contains food insecurity data from 2013 - 2018. In addition to food insecurity rates, it also includes the total food insecure population and accumulated food budget shortfalls per state. The Current Population Survey, which is administered by the Census Bureau, makes an effort to measure the budget shortfall of households suffering from food security. This budget shortfall measure represents the amount of additional money a food insecure person would likely spend to meet their food nutrition needs. Here, this figure is aggregated to the state level. High Meal Costs are defined as above the 75% percentile among meal costs at the county level.',
     render: data => {
       dash(data[0], data[1]);
     },
@@ -84,14 +84,21 @@ function main(geo, insecure, covid) {
 
   function drawProgress() {
     const numData = [...new Array(slides.length)].map((_, idx) => idx);
+    console.log(numData);
     select('#progress')
       .selectAll('.progress-dot')
       .data(numData)
       .join('div')
       .attr('class', 'progress-dot')
-      .style('background-color', idx =>
-        currentSlideIdx < idx ? 'cornflower-blue' : 'black',
-      );
+      .style('background-color', idx => {
+        if (currentSlideIdx === idx) {
+          return '#fba55c';
+        } else if (currentSlideIdx < idx) {
+          return '#4081ec';
+        } else {
+          return '#27313f';
+        }
+      });
   }
 
   // draw loop

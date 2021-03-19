@@ -73,11 +73,6 @@ body {
   justify-content: center;
   align-items: center;
   border-bottom: 1px solid black;
-  /* background-color: #ffffe0; */
-  /* background-color: #efe2ba; */
-  /* background-color: #eee2dc; */
-  /* background-color: #f0dfd9; */
-  /* background-color: #b8949e; */
   background-color:rgba(184, 148, 158, 0.5)
 }
 
@@ -85,19 +80,46 @@ body {
 .progress-dot {
   height: 20px;
   width: 20px;
-  background-color: cornflowerblue;
+  border-radius: 50%;
+  background-color: #4081ec;
   display: inline-block;
   margin: 2px;
+
 }
+
+
 
 #prev {
-  min-width: 35px;
+  min-width: 40px;
+  background-color: whitesmoke;
+  color: black;
+  border: 1px solid black;
+  font-size: 14px;
+  font-weight: 500;
+  padding: .2em;
+  border-radius: 10%;
+}
+#prev:hover {
+  background-color: grey;
+  color: white;
 }
 
+
 #next {
-  min-width: 35px;
-  margin-left: 3px;
+  min-width: 40px;
+  background-color: whitesmoke;
+  color: black;
+  border: 1px solid black;
+  font-size: 14px;
+  font-weight: 500;
+  padding: .2em;
+  border-radius: 10%;
 }
+#next:hover {
+  background-color: grey;
+  color: white;
+}
+
 
 #filters div{
   min-width: 100px;
@@ -112,6 +134,7 @@ body {
     max-height: 500px;
     border-right: 0px;
     border-bottom: 1px solid black;
+    margin-bottom: 5px;
   }
 
   #main-content {
