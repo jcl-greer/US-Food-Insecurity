@@ -11,5 +11,6 @@ The primary data source for this project was generously provided by Feeding Amer
 * This [observable example](https://observablehq.com/@abebrath/scatterplot-of-text-labels) for help creating textual labels. 
 * This [Mike Bostock Observable Choropleth](https://observablehq.com/@d3/state-choropleth) on how to develop choropleth maps. 
 * This great [Mike Bostock Observable Example](https://observablehq.com/@d3/line-chart-with-tooltip), which was adapted for the tooltips. 
+* Again, a Mike Bostock [horizontal stacked bar chart example](https://observablehq.com/@d3/single-stack-normalized-horizontal-bar-chart) for how to configure a stacked bar chart.
 * This [stackoverflow explanation](https://stackoverflow.com/questions/42430361/scaling-d3-v4-map-to-fit-svg-or-at-all) for scaling down my map size and helping me realize that I was projecting data that was already projected. 
 * This [observable post](https://observablehq.com/@onoratod/animate-a-path-in-d3) for a being a useful resource on animating lines
