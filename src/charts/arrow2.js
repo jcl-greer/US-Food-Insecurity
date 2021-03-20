@@ -17,7 +17,6 @@ export default function(initialData) {
   function prepData(data) {
     const len = data.length;
     let fullArr = [];
-
     for (let i = 0; i < len; i++) {
       for (let j = 0; j < len; j++) {
         let rowArr = [];

@@ -190,7 +190,7 @@ export default function(data) {
           el
             .transition(t)
             .ease(easeBackOut.overshoot(0.25))
-            .delay((d, i) => i * 4)
+            .delay((d, i) => i * 3)
             .attr('transform', function(d) {
               return (
                 'translate(' +

@@ -32,7 +32,7 @@ const slides = [
   {
     title: "Insecurity Rates Declined Significantly over the 2010's",
     content:
-      'By 2018, state level food insecurity rates had finally returned to Pre-Recession levels. Over this period, food insecurity rates fell in all states - precipitously in most. The drop was especially profound in states like Georgia, South Carolina, and California, where either food insecurity rates or overall populations were previously quite high. The national statewide average had now dropped to approximately ~12%. Despite experiencing some of the higher drops in food insecurity rates, states in the southeast still had, on average, higher food insecurity rates.',
+      'By 2018, state level food insecurity rates had finally returned to pre-Recession levels. Over this period, food insecurity rates fell in all states - precipitously in most. The drop was especially profound in states like Georgia, South Carolina, and California, where either food insecurity rates or overall populations were previously quite high. The national statewide average had now dropped to approximately ~12%. Despite experiencing some of the higher drops in food insecurity rates, southeastern states still experienced, on average, higher food insecurity rates.',
     render: data => {
       arrow2(data);
     },

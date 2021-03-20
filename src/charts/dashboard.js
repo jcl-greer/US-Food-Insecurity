@@ -141,7 +141,6 @@ function map(us, insecure, callout, columnHas, selectedYear, marker = null) {
     .attr('height', height)
     .attr('width', width)
     .append('g')
-    // .attr('viewBox', [10, 10, 900, 530])
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
   svg

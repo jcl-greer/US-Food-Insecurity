@@ -5,7 +5,7 @@ This project explores food insecurity in the United States during the 2010's at 
 The primary data source for this project was generously provided by Feeding America. It is derived from their [Map the Meal Gap dataset](https://map.feedingamerica.org/). 
 
 ### Credits / Code Sources
-* This project was made possible by Andrew McNutt's feedback and teaching notes - particularly the lectures on interactive dropdowns and slideshows, which helped form the foundation for this interactive visualization.
+* This project was made possible by Andrew McNutt's teaching notes, coding blocks, and feedback - particularly the lectures on interactive dropdowns and slideshows, which helped form the foundation for this interactive visualization.
 * This [observable post](https://observablehq.com/@d3/selection-join) for help developing transitions. 
 * This [stackoverflow post](https://stackoverflow.com/questions/17437408/how-to-change-a-circle-into-a-square-with-d3-js) for help creating shape change animation. 
 * This [observable example](https://observablehq.com/@abebrath/scatterplot-of-text-labels) for help creating textual labels. 

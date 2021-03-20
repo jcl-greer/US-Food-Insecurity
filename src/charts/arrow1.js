@@ -53,9 +53,7 @@ export default function(initialData) {
     .join(enter =>
       enter
         .append('circle')
-        // .attr('cy', d => yScale(d[yDim]) * 0)
         .attr('cy', d => 0)
-        // .attr('cx', d => xScale(d[xDim]) * 1.5)
         .attr('cx', d => 0)
         .call(el =>
           el
